@@ -1,7 +1,15 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Skills = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
+
   const skillCategories = [
     {
       title: "DevOps Tools",
@@ -46,21 +54,86 @@ const Skills = () => {
     }
   ];
 
+  useEffect(() => {
+    // Title animation
+    gsap.fromTo(titleRef.current,
+      { y: 50, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: titleRef.current,
+          start: "top 80%",
+          end: "bottom 20%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+
+    // Categories animation
+    if (categoriesRef.current) {
+      gsap.fromTo(categoriesRef.current.children,
+        { y: 80, opacity: 0, scale: 0.8 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "back.out(1.7)",
+          scrollTrigger: {
+            trigger: categoriesRef.current,
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+
+      // Animate skill bars
+      skillCategories.forEach((category, categoryIndex) => {
+        category.skills.forEach((skill, skillIndex) => {
+          gsap.fromTo(`.skill-bar-${categoryIndex}-${skillIndex}`,
+            { width: "0%" },
+            {
+              width: `${skill.level}%`,
+              duration: 1.5,
+              ease: "power2.out",
+              delay: categoryIndex * 0.2 + skillIndex * 0.1,
+              scrollTrigger: {
+                trigger: `.skill-category-${categoryIndex}`,
+                start: "top 80%",
+                end: "bottom 20%",
+                toggleActions: "play none none reverse"
+              }
+            }
+          );
+        });
+      });
+    }
+
+    return () => {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
+
   return (
-    <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-800/50">
+    <section ref={sectionRef} id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-800/30 backdrop-blur-sm relative z-10">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          <h2 ref={titleRef} className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             Technical Skills
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto"></div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {skillCategories.map((category, index) => (
+        <div ref={categoriesRef} className="grid md:grid-cols-2 gap-8">
+          {skillCategories.map((category, categoryIndex) => (
             <div
-              key={index}
-              className="bg-gray-700/50 p-6 rounded-lg border border-gray-600 hover:border-purple-500/50 transition-all duration-300"
+              key={categoryIndex}
+              className={`skill-category-${categoryIndex} bg-gray-700/50 p-6 rounded-lg border border-gray-600 hover:border-purple-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 backdrop-blur-sm`}
             >
               <div className="flex items-center mb-6">
                 <span className="text-2xl mr-3">{category.icon}</span>
@@ -74,11 +147,13 @@ const Skills = () => {
                       <span className="text-gray-300">{skill.name}</span>
                       <span className="text-purple-400">{skill.level}%</span>
                     </div>
-                    <div className="w-full bg-gray-600 rounded-full h-2">
+                    <div className="w-full bg-gray-600 rounded-full h-2 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-1000 ease-out"
-                        style={{ width: `${skill.level}%` }}
-                      ></div>
+                        className={`skill-bar-${categoryIndex}-${skillIndex} bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-1000 ease-out relative`}
+                        style={{ width: '0%' }}
+                      >
+                        <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                      </div>
                     </div>
                   </div>
                 ))}
