@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Briefcase, Calendar, MapPin, TrendingUp, Zap } from 'lucide-react';
 import { useGSAP } from '../hooks/useGSAP';
@@ -153,7 +154,7 @@ const Experience = () => {
                     </div>
                   </div>
                   
-                  {/* Growth Level Glass Indicator */}
+                  {/* Growth Level Glass Indicator - positioned correctly at the central node */}
                   <div className="absolute -top-2 -right-2">
                     <div className={`w-5 h-7 rounded-lg bg-gray-800/20 backdrop-blur-sm border border-gray-600/30 flex items-end justify-center p-1 ${
                       hoveredExp === index ? 'scale-110' : 'scale-100'
@@ -207,8 +208,6 @@ const Experience = () => {
                           </div>
                         ))}
                       </div>
-
-                      {/* Removed the duplicate Growth Indicator section */}
                     </div>
                   </div>
                 </div>
@@ -244,3 +243,4 @@ const Experience = () => {
 };
 
 export default Experience;
+
