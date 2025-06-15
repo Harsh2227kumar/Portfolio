@@ -1,8 +1,46 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const Skills = () => {
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const skillBoxesRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // Initialize refs array
+    skillBoxesRef.current = skillBoxesRef.current.slice(0, skillCategories.length);
+
+    // Create animation for each skill box
+    skillBoxesRef.current.forEach((box, index) => {
+      if (!box) return;
+
+      gsap.fromTo(box,
+        {
+          opacity: 0,
+          y: 50,
+          scale: 0.9
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: box,
+            start: "top bottom-=100",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
 
   const skillCategories = [
     {
@@ -53,7 +91,7 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-800/80 backdrop-blur-sm relative z-10">
+    <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 relative z-10">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
@@ -69,6 +107,7 @@ const Skills = () => {
           {skillCategories.map((category, categoryIndex) => (
             <div
               key={categoryIndex}
+              ref={el => skillBoxesRef.current[categoryIndex] = el}
               className="bg-gray-900/60 p-8 rounded-2xl border border-gray-700 hover:border-purple-500/50 transition-all duration-500 backdrop-blur-sm"
             >
               <div className="flex items-center mb-8">

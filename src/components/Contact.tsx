@@ -38,8 +38,8 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email",
-      value: "yash@example.com",
-      link: "mailto:yash@example.com",
+      value: "harsh2227official@gmail.com",
+      link: "mailto:harsh2227official@gmail.com",
       color: "from-purple-500 to-pink-500",
       bgColor: "bg-purple-600",
       hoverColor: "hover:bg-purple-700"
@@ -47,8 +47,8 @@ const Contact = () => {
     {
       icon: Linkedin,
       title: "LinkedIn",
-      value: "linkedin.com/in/yashmeshram",
-      link: "https://linkedin.com/in/yashmeshram",
+      value: "linkedin.com/in/harsh-kumar-560944237/",
+      link: "https://www.linkedin.com/in/harsh-kumar-560944237/",
       color: "from-blue-500 to-cyan-500",
       bgColor: "bg-blue-600",
       hoverColor: "hover:bg-blue-700"
@@ -56,20 +56,11 @@ const Contact = () => {
     {
       icon: Github,
       title: "GitHub",
-      value: "github.com/yashmeshram",
-      link: "https://github.com/yashmeshram",
+      value: "github.com/Harsh2227kumar/",
+      link: "https://github.com/Harsh2227kumar/",
       color: "from-gray-500 to-gray-700",
       bgColor: "bg-gray-600",
       hoverColor: "hover:bg-gray-700"
-    },
-    {
-      icon: Phone,
-      title: "Phone",
-      value: "+91 12345 67890",
-      link: "tel:+911234567890",
-      color: "from-green-500 to-emerald-500",
-      bgColor: "bg-green-600",
-      hoverColor: "hover:bg-green-700"
     }
   ];
 
