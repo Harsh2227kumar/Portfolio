@@ -1,18 +1,75 @@
-
 import React from 'react';
-import { User, Code, Settings, Award, Shield } from 'lucide-react';
+import { User, Code, Settings, Award, Shield, ExternalLink } from 'lucide-react';
 import { useGSAP } from '../hooks/useGSAP';
 
 const About = () => {
   const containerRef = useGSAP();
 
   const certifications = [
-    { name: "AWS Cloud Practitioner", issuer: "Amazon Web Services", year: "2024", level: "Professional" },
-    { name: "Docker Certified Associate", issuer: "Docker Inc.", year: "2024", level: "Professional" },
-    { name: "Kubernetes Administrator", issuer: "Cloud Native Computing Foundation", year: "2023", level: "Expert" },
-    { name: "React Development", issuer: "Meta", year: "2023", level: "Intermediate" },
-    { name: "DevOps Foundation", issuer: "DevOps Institute", year: "2023", level: "Foundation" },
-    { name: "Python Programming", issuer: "Python Institute", year: "2022", level: "Intermediate" }
+    { 
+      name: "Windows Essential: A Hand's-on Workshop", 
+      issuer: "Microsoft Learn Student Ambassadors", 
+      year: "Sep 2024", 
+      level: "Professional",
+      skills: ["Windows", "Windows 10", "Microsoft Azure", "Virtualization", "VMware", "VirtualBox"],
+      hasCredential: false
+    },
+    { 
+      name: "Networking Basics", 
+      issuer: "Cisco", 
+      year: "Aug 2024", 
+      level: "Professional",
+      skills: ["Network Security", "TCP/IP", "IPv4", "IPv6", "Cisco Networking", "OSI Model"],
+      hasCredential: true,
+      credentialUrl: "#" // Replace with actual URL when available
+    },
+    { 
+      name: "Cyber Security Awareness Programme", 
+      issuer: "NIELIT", 
+      year: "Jul 2024", 
+      level: "Foundation",
+      skills: ["Cybersecurity", "Cybersecurity Tools", "Cybersecurity Law", "Phishing"],
+      hasCredential: false
+    },
+    { 
+      name: "SQL Basic", 
+      issuer: "HackerRank", 
+      year: "Jun 2024", 
+      level: "Intermediate",
+      skills: ["SQL"],
+      hasCredential: true,
+      credentialUrl: "#" // Replace with actual HackerRank URL
+    },
+    { 
+      name: "SQL (Intermediate)", 
+      issuer: "HackerRank", 
+      year: "Jun 2024", 
+      level: "Intermediate",
+      skills: ["SQL"],
+      hasCredential: true,
+      credentialId: "5546df6bf89b",
+      credentialUrl: "#" // Replace with actual HackerRank URL
+    },
+    { 
+      name: "Hackietainment Advanced Batch", 
+      issuer: "Hackietainment", 
+      year: "Mar 2023", 
+      level: "Expert",
+      skills: ["SQL", "Ethical Hacking", "Penetration Testing", "Networking", "Cybersecurity"],
+      hasCredential: true,
+      credentialId: "ca29e19b-b4e7-46b6-9289-93163b9e260d",
+      credentialUrl: "#" // Replace with actual URL
+    },
+    { 
+      name: "Python AI", 
+      issuer: "HCL GUVI", 
+      year: "Apr 2021", 
+      level: "Intermediate",
+      skills: ["Artificial Intelligence (AI)", "Python (Programming Language)"],
+      hasCredential: true,
+      credentialId: "ujSA6191668e3931t9",
+      credentialUrl: "#" // Replace with actual GUVI URL
+    }
   ];
 
   return (
@@ -126,13 +183,13 @@ const About = () => {
         </div>
 
         {/* Certifications Section */}
-        <div className="gsap-card bg-gray-800/20 backdrop-blur-sm p-10 rounded-3xl border border-gray-700/30">
+        <div className="gsap-card bg-gray-800/5 backdrop-blur-sm p-10 rounded-3xl border border-gray-700/20">
           <h3 className="gsap-text text-3xl font-bold text-center text-white mb-12 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-            Certifications & Credentials
+            Licenses & Certifications
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {certifications.map((cert, index) => (
-              <div key={index} className="gsap-card bg-gray-800/20 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/30 hover:border-purple-500/30 transition-all duration-300 hover:bg-gray-800/30 group">
+              <div key={index} className="gsap-card bg-gray-800/10 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/20 hover:border-purple-500/30 transition-all duration-300 hover:bg-gray-800/20 group">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg group-hover:scale-110 transition-transform duration-300">
                     <Award size={24} className="text-white" />
@@ -148,7 +205,38 @@ const About = () => {
                 </div>
                 <h4 className="text-lg font-semibold text-white mb-2">{cert.name}</h4>
                 <p className="text-gray-400 text-sm mb-2">{cert.issuer}</p>
-                <p className="text-gray-500 text-sm">{cert.year}</p>
+                <p className="text-gray-500 text-sm mb-3">{cert.year}</p>
+                
+                {cert.credentialId && (
+                  <p className="text-xs text-gray-400 mb-3">ID: {cert.credentialId}</p>
+                )}
+                
+                {/* Skills */}
+                <div className="mb-4">
+                  <div className="flex flex-wrap gap-1">
+                    {cert.skills.slice(0, 3).map((skill, idx) => (
+                      <span key={idx} className="px-2 py-1 bg-gray-700/30 text-gray-300 rounded-full text-xs">
+                        {skill}
+                      </span>
+                    ))}
+                    {cert.skills.length > 3 && (
+                      <span className="px-2 py-1 bg-gray-700/30 text-gray-400 rounded-full text-xs">
+                        +{cert.skills.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Visit Certificate Button */}
+                {cert.hasCredential && (
+                  <button
+                    onClick={() => window.open(cert.credentialUrl, '_blank')}
+                    className="w-full mt-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg text-sm font-medium hover:from-purple-700 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2 group"
+                  >
+                    Visit Certificate
+                    <ExternalLink size={14} className="group-hover:translate-x-1 transition-transform duration-200" />
+                  </button>
+                )}
               </div>
             ))}
           </div>
