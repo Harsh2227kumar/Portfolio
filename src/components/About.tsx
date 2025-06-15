@@ -42,7 +42,7 @@ const About = () => {
         <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
           {/* Left Side - Story */}
           <div className="space-y-8">
-            <div className="gsap-card bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm p-8 rounded-3xl border border-purple-500/20 hover:border-purple-500/40 transition-all duration-500">
+            <div className="gsap-card bg-gray-800/20 backdrop-blur-sm p-8 rounded-3xl border border-purple-500/20 hover:border-purple-500/40 transition-all duration-500">
               <h3 className="gsap-text text-3xl font-bold text-white mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 My Journey
               </h3>
@@ -57,7 +57,7 @@ const About = () => {
 
           {/* Right Side - Expertise Cards */}
           <div className="space-y-4">
-            <div className="gsap-card bg-gradient-to-br from-purple-900/20 to-purple-800/20 backdrop-blur-sm p-4 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all duration-500 hover:shadow-lg hover:shadow-purple-500/20">
+            <div className="gsap-card bg-purple-900/10 backdrop-blur-sm p-4 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all duration-500 hover:shadow-lg hover:shadow-purple-500/20">
               <div className="flex items-center mb-3">
                 <div className="p-2 bg-purple-600 rounded-lg mr-3 gsap-button">
                   <Settings size={20} />
@@ -79,7 +79,7 @@ const About = () => {
               </div>
             </div>
 
-            <div className="gsap-card bg-gradient-to-br from-blue-900/20 to-blue-800/20 backdrop-blur-sm p-4 rounded-xl border border-blue-500/30 hover:border-blue-500/50 transition-all duration-500 hover:shadow-lg hover:shadow-blue-500/20">
+            <div className="gsap-card bg-blue-900/10 backdrop-blur-sm p-4 rounded-xl border border-blue-500/30 hover:border-blue-500/50 transition-all duration-500 hover:shadow-lg hover:shadow-blue-500/20">
               <div className="flex items-center mb-3">
                 <div className="p-2 bg-blue-600 rounded-lg mr-3 gsap-button">
                   <Code size={20} />
@@ -101,7 +101,7 @@ const About = () => {
               </div>
             </div>
 
-            <div className="gsap-card bg-gradient-to-br from-red-900/20 to-red-800/20 backdrop-blur-sm p-4 rounded-xl border border-red-500/30 hover:border-red-500/50 transition-all duration-500 hover:shadow-lg hover:shadow-red-500/20">
+            <div className="gsap-card bg-red-900/10 backdrop-blur-sm p-4 rounded-xl border border-red-500/30 hover:border-red-500/50 transition-all duration-500 hover:shadow-lg hover:shadow-red-500/20">
               <div className="flex items-center mb-3">
                 <div className="p-2 bg-red-600 rounded-lg mr-3 gsap-button">
                   <Shield size={20} />
@@ -126,13 +126,13 @@ const About = () => {
         </div>
 
         {/* Certifications Section */}
-        <div className="gsap-card bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm p-10 rounded-3xl border border-gray-700/30">
+        <div className="gsap-card bg-gray-800/20 backdrop-blur-sm p-10 rounded-3xl border border-gray-700/30">
           <h3 className="gsap-text text-3xl font-bold text-center text-white mb-12 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             Certifications & Credentials
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {certifications.map((cert, index) => (
-              <div key={index} className="gsap-card bg-gray-800/30 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/30 hover:border-purple-500/30 transition-all duration-300 hover:bg-gray-800/40 group">
+              <div key={index} className="gsap-card bg-gray-800/20 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/30 hover:border-purple-500/30 transition-all duration-300 hover:bg-gray-800/30 group">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg group-hover:scale-110 transition-transform duration-300">
                     <Award size={24} className="text-white" />

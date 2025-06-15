@@ -28,7 +28,7 @@ const Education = () => {
   ];
 
   return (
-    <section ref={containerRef} id="education" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-indigo-900/20 to-purple-900/30 relative overflow-hidden">
+    <section ref={containerRef} id="education" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="gsap-card absolute -top-40 -right-40 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
@@ -64,7 +64,7 @@ const Education = () => {
               
               {/* Content Card */}
               <div className="ml-20">
-                <div className="gsap-card bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm p-8 rounded-3xl border border-gray-700/30 hover:border-purple-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20">
+                <div className="gsap-card bg-gray-800/20 backdrop-blur-sm p-8 rounded-3xl border border-gray-700/30 hover:border-purple-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20">
                   {/* Header */}
                   <div className="flex flex-wrap items-start justify-between mb-6">
                     <div className="flex-1 min-w-0">
@@ -114,25 +114,6 @@ const Education = () => {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Call to Action */}
-        <div className="gsap-text text-center">
-          <div className="inline-block p-8 bg-gradient-to-r from-purple-900/30 to-blue-900/30 backdrop-blur-sm rounded-3xl border border-purple-500/30">
-            <GraduationCap size={48} className="mx-auto mb-4 text-purple-400" />
-            <h4 className="text-2xl font-bold text-white mb-4">
-              Continuous Learning Journey
-            </h4>
-            <p className="text-gray-300 mb-6 max-w-md">
-              Always eager to learn new technologies and expand my knowledge horizons
-            </p>
-            <a
-              href="#contact"
-              className="gsap-button inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-full text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25"
-            >
-              Let's Discuss
-            </a>
-          </div>
         </div>
       </div>
     </section>
