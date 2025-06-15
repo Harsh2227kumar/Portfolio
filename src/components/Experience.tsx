@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Briefcase, Calendar, MapPin, TrendingUp, Zap } from 'lucide-react';
 import { useGSAP } from '../hooks/useGSAP';
@@ -67,7 +68,7 @@ const Experience = () => {
     const waterHeight = (level / 4) * 80; // Changed from 100 to 80 so level 4 doesn't completely fill
     
     return (
-      <div className="relative w-5 h-8 mx-auto"> {/* Made smaller: w-8 h-12 -> w-5 h-8 */}
+      <div className="relative w-3 h-6 mx-auto"> {/* Made even smaller: w-5 h-8 -> w-3 h-6 */}
         {/* Glass Container */}
         <div className="absolute inset-0 border-2 border-gray-400 rounded-b-lg bg-transparent opacity-80">
           {/* Water */}
@@ -154,7 +155,7 @@ const Experience = () => {
                   
                   {/* Growth Level Glass Indicator */}
                   <div className="absolute -top-2 -right-2">
-                    <div className={`w-7 h-10 rounded-lg bg-gray-800/20 backdrop-blur-sm border border-gray-600/30 flex items-end justify-center p-1 ${
+                    <div className={`w-5 h-7 rounded-lg bg-gray-800/20 backdrop-blur-sm border border-gray-600/30 flex items-end justify-center p-1 ${
                       hoveredExp === index ? 'scale-110' : 'scale-100'
                     } transition-all duration-300`}>
                       <GrowthGlass level={exp.level} color={exp.color} />
@@ -207,15 +208,7 @@ const Experience = () => {
                         ))}
                       </div>
 
-                      {/* Growth Indicator */}
-                      <div className="mt-6 pt-4 border-t border-gray-700">
-                        <div className="flex items-center justify-between text-sm text-gray-400">
-                          <span>Growth Level</span>
-                          <div className="flex items-center space-x-2">
-                            <GrowthGlass level={exp.level} color={exp.color} />
-                          </div>
-                        </div>
-                      </div>
+                      {/* Removed the duplicate Growth Indicator section */}
                     </div>
                   </div>
                 </div>
