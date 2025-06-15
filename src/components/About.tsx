@@ -19,6 +19,15 @@ const About = () => {
     { icon: Target, title: 'Goal Achiever', desc: 'Consistent delivery of results' }
   ];
 
+  const certifications = [
+    { name: "AWS Cloud Practitioner", issuer: "Amazon Web Services", year: "2024", level: "Professional" },
+    { name: "Docker Certified Associate", issuer: "Docker Inc.", year: "2024", level: "Professional" },
+    { name: "Kubernetes Administrator", issuer: "Cloud Native Computing Foundation", year: "2023", level: "Expert" },
+    { name: "React Development", issuer: "Meta", year: "2023", level: "Intermediate" },
+    { name: "DevOps Foundation", issuer: "DevOps Institute", year: "2023", level: "Foundation" },
+    { name: "Python Programming", issuer: "Python Institute", year: "2022", level: "Intermediate" }
+  ];
+
   return (
     <section ref={containerRef} id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-purple-900/20 to-blue-900/20 relative overflow-hidden">
       {/* Animated Background Elements */}
@@ -169,6 +178,35 @@ const About = () => {
                     <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Certifications Section */}
+        <div className="gsap-card bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm p-10 rounded-3xl border border-gray-700/30 mb-16">
+          <h3 className="gsap-text text-3xl font-bold text-center text-white mb-12 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            Certifications & Credentials
+          </h3>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {certifications.map((cert, index) => (
+              <div key={index} className="gsap-card bg-gray-800/40 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/30 hover:border-purple-500/30 transition-all duration-300 hover:bg-gray-800/60 group">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <Award size={24} className="text-white" />
+                  </div>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    cert.level === 'Expert' ? 'bg-red-600/30 text-red-300' :
+                    cert.level === 'Professional' ? 'bg-purple-600/30 text-purple-300' :
+                    cert.level === 'Intermediate' ? 'bg-blue-600/30 text-blue-300' :
+                    'bg-green-600/30 text-green-300'
+                  }`}>
+                    {cert.level}
+                  </span>
+                </div>
+                <h4 className="text-lg font-semibold text-white mb-2">{cert.name}</h4>
+                <p className="text-gray-400 text-sm mb-2">{cert.issuer}</p>
+                <p className="text-gray-500 text-sm">{cert.year}</p>
               </div>
             ))}
           </div>
