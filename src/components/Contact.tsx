@@ -74,7 +74,7 @@ const Contact = () => {
   ];
 
   return (
-    <section ref={containerRef} id="contact" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900/30 relative overflow-hidden">
+    <section ref={containerRef} id="contact" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
@@ -117,7 +117,7 @@ const Contact = () => {
                   rel={method.link.startsWith('http') ? 'noopener noreferrer' : ''}
                   className="gsap-card group block"
                 >
-                  <div className="relative p-6 bg-gray-800/60 backdrop-blur-sm rounded-2xl border border-gray-700/50 hover:border-gray-600 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 hover:bg-gray-800/80">
+                  <div className="relative p-6 bg-gray-800/40 backdrop-blur-sm rounded-2xl border border-gray-700/50 hover:border-gray-600 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 hover:bg-gray-800/60">
                     <div className="flex items-center space-x-5">
                       <div className={`p-4 ${method.bgColor} ${method.hoverColor} rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                         <method.icon size={28} className="text-white" />
@@ -144,7 +144,7 @@ const Contact = () => {
             </div>
 
             {/* Location Card */}
-            <div className="gsap-card bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/50">
+            <div className="gsap-card bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/50">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="p-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg">
                   <MapPin size={24} className="text-white" />
@@ -162,7 +162,7 @@ const Contact = () => {
 
           {/* Contact Form - Right Side */}
           <div className="lg:col-span-3">
-            <div className="gsap-card bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm p-8 lg:p-10 rounded-3xl border border-gray-700/50 shadow-2xl">
+            <div className="gsap-card bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm p-8 lg:p-10 rounded-3xl border border-gray-700/50 shadow-2xl">
               <div className="mb-8">
                 <h3 className="text-2xl font-bold text-white mb-3">Send Message</h3>
                 <p className="text-gray-400">Fill out the form below and I'll get back to you as soon as possible.</p>
@@ -243,34 +243,6 @@ const Contact = () => {
                   💡 <strong>Quick tip:</strong> Include details about your project timeline and budget for faster response!
                 </p>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="gsap-text text-center mt-20">
-          <div className="inline-block p-8 bg-gradient-to-r from-purple-900/20 to-blue-900/20 backdrop-blur-sm rounded-3xl border border-gray-700/30">
-            <h4 className="text-2xl font-bold text-white mb-4">
-              Ready to start your project?
-            </h4>
-            <p className="text-gray-300 mb-6">
-              Let's discuss how we can bring your vision to life
-            </p>
-            <div className="flex justify-center space-x-4">
-              <a
-                href="mailto:yash@example.com"
-                className="gsap-button px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-full text-white font-medium transition-all duration-300 hover:shadow-lg"
-              >
-                Email Me
-              </a>
-              <a
-                href="https://linkedin.com/in/yashmeshram"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="gsap-button px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-full text-white font-medium transition-all duration-300 hover:shadow-lg"
-              >
-                LinkedIn
-              </a>
             </div>
           </div>
         </div>
