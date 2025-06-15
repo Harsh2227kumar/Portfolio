@@ -1,8 +1,10 @@
-
 import React from 'react';
 import { Github, Star } from 'lucide-react';
+import { useGSAP } from '../hooks/useGSAP';
 
 const Projects = () => {
+  const containerRef = useGSAP();
+
   const projects = [
     {
       title: "Incident Management System",
@@ -40,10 +42,10 @@ const Projects = () => {
   };
 
   return (
-    <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8">
+    <section ref={containerRef} id="projects" className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          <h2 className="gsap-text text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             Key Projects
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto"></div>
@@ -53,7 +55,7 @@ const Projects = () => {
           {projects.map((project, index) => (
             <div
               key={index}
-              className={`bg-gray-800/50 rounded-lg border ${getColorClasses(project.color)} transition-all duration-300 hover:scale-105 hover:shadow-xl group`}
+              className={`gsap-project-card gsap-card bg-gray-800/50 rounded-lg border ${getColorClasses(project.color)} transition-all duration-300 group`}
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">

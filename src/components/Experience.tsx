@@ -1,9 +1,10 @@
-
 import React, { useState } from 'react';
 import { Briefcase, Calendar, MapPin, TrendingUp, Zap } from 'lucide-react';
+import { useGSAP } from '../hooks/useGSAP';
 
 const Experience = () => {
   const [hoveredExp, setHoveredExp] = useState<number | null>(null);
+  const containerRef = useGSAP();
 
   const experiences = [
     {
@@ -63,7 +64,7 @@ const Experience = () => {
   ];
 
   return (
-    <section id="experience" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <section ref={containerRef} id="experience" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Growth Elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full blur-3xl animate-pulse"></div>
@@ -77,11 +78,11 @@ const Experience = () => {
             <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <h2 className="gsap-text text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
               Growth Journey
             </h2>
           </div>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="gsap-text text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
             Every step forward is a step toward achieving something bigger and better than your current situation
           </p>
           <div className="w-32 h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 mx-auto mt-6 rounded-full"></div>
@@ -105,7 +106,7 @@ const Experience = () => {
             {experiences.map((exp, index) => (
               <div
                 key={index}
-                className={`relative flex items-center ${
+                className={`gsap-timeline-item relative flex items-center ${
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 } group`}
                 onMouseEnter={() => setHoveredExp(index)}
@@ -131,7 +132,7 @@ const Experience = () => {
 
                 {/* Experience Card */}
                 <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pr-16' : 'md:pl-16'}`}>
-                  <div className={`relative transition-all duration-500 transform ${
+                  <div className={`gsap-card relative transition-all duration-500 transform ${
                     hoveredExp === index ? 'scale-105 -translate-y-2' : 'scale-100'
                   }`}>
                     {/* Card Background with Gradient Border */}
