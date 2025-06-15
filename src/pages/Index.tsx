@@ -8,7 +8,6 @@ import Skills from '@/components/Skills';
 import Projects from '@/components/Projects';
 import Contact from '@/components/Contact';
 import Navigation from '@/components/Navigation';
-import InteractiveBackground from '@/components/InteractiveBackground';
 
 const Index = () => {
   const [loading, setLoading] = useState(true);
@@ -26,17 +25,14 @@ const Index = () => {
   }
 
   return (
-    <div className="bg-gray-900 text-white overflow-x-hidden relative">
-      <InteractiveBackground />
-      <div className="relative z-10">
-        <Navigation />
-        <Hero />
-        <About />
-        <Experience />
-        <Skills />
-        <Projects />
-        <Contact />
-      </div>
+    <div className="bg-gray-900 text-white overflow-x-hidden">
+      <Navigation />
+      <Hero />
+      <About />
+      <Experience />
+      <Skills />
+      <Projects />
+      <Contact />
     </div>
   );
 };
