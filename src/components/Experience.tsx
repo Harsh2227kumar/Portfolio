@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Briefcase, Calendar, MapPin, TrendingUp, Zap } from 'lucide-react';
 import { useGSAP } from '../hooks/useGSAP';
@@ -63,6 +64,36 @@ const Experience = () => {
     }
   ];
 
+  const GrowthGlass = ({ level, color }: { level: number, color: string }) => {
+    const waterHeight = (level / 4) * 100;
+    
+    return (
+      <div className="relative w-8 h-12 mx-auto">
+        {/* Glass Container */}
+        <div className="absolute inset-0 border-2 border-gray-400 rounded-b-lg bg-transparent opacity-80">
+          {/* Water */}
+          <div 
+            className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t ${color} rounded-b-lg transition-all duration-1000 ease-out`}
+            style={{ height: `${waterHeight}%` }}
+          >
+            {/* Floating animation bubbles */}
+            <div className="relative h-full overflow-hidden">
+              <div className="absolute w-1 h-1 bg-white/30 rounded-full animate-ping" style={{ left: '20%', animationDelay: '0s', animationDuration: '2s' }}></div>
+              <div className="absolute w-0.5 h-0.5 bg-white/40 rounded-full animate-ping" style={{ left: '70%', animationDelay: '0.5s', animationDuration: '2.5s' }}></div>
+              <div className="absolute w-0.5 h-0.5 bg-white/30 rounded-full animate-ping" style={{ left: '45%', animationDelay: '1s', animationDuration: '3s' }}></div>
+              
+              {/* Water surface wave animation */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-white/20 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Glass reflection effect */}
+        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-white/40 to-transparent rounded-l-lg"></div>
+      </div>
+    );
+  };
+
   return (
     <section ref={containerRef} id="experience" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Growth Elements */}
@@ -122,10 +153,12 @@ const Experience = () => {
                     </div>
                   </div>
                   
-                  {/* Growth Level Indicator */}
+                  {/* Growth Level Glass Indicator */}
                   <div className="absolute -top-2 -right-2">
-                    <div className={`w-6 h-6 rounded-full bg-gradient-to-r ${exp.color} flex items-center justify-center text-xs font-bold text-white shadow-lg`}>
-                      {exp.level}
+                    <div className={`w-10 h-14 rounded-lg bg-gray-800/20 backdrop-blur-sm border border-gray-600/30 flex items-end justify-center p-1 ${
+                      hoveredExp === index ? 'scale-110' : 'scale-100'
+                    } transition-all duration-300`}>
+                      <GrowthGlass level={exp.level} color={exp.color} />
                     </div>
                   </div>
                 </div>
@@ -179,17 +212,11 @@ const Experience = () => {
                       <div className="mt-6 pt-4 border-t border-gray-700">
                         <div className="flex items-center justify-between text-sm text-gray-400">
                           <span>Growth Level</span>
-                          <div className="flex space-x-1">
-                            {[...Array(4)].map((_, i) => (
-                              <div
-                                key={i}
-                                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                                  i < exp.level 
-                                    ? `bg-gradient-to-r ${exp.color}` 
-                                    : 'bg-gray-600'
-                                }`}
-                              ></div>
-                            ))}
+                          <div className="flex items-center space-x-2">
+                            <GrowthGlass level={exp.level} color={exp.color} />
+                            <span className={`text-sm font-semibold bg-gradient-to-r ${exp.color} bg-clip-text text-transparent`}>
+                              Level {exp.level}
+                            </span>
                           </div>
                         </div>
                       </div>
