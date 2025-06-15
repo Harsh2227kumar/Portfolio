@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { Briefcase, Calendar, MapPin, TrendingUp, Zap } from 'lucide-react';
 import { useGSAP } from '../hooks/useGSAP';
@@ -21,7 +20,6 @@ const Experience = () => {
         "Contributed to an Incident Management System, enhancing ticket lifecycle workflows and user authentication with Flask"
       ],
       color: "from-purple-500 to-pink-500",
-      level: 4,
       icon: <Zap className="w-6 h-6" />
     },
     {
@@ -34,7 +32,6 @@ const Experience = () => {
         "Contributed to the event's frontend using modern frameworks and tools"
       ],
       color: "from-blue-500 to-cyan-500",
-      level: 3,
       icon: <TrendingUp className="w-6 h-6" />
     },
     {
@@ -47,7 +44,6 @@ const Experience = () => {
         "Designed and maintained web interfaces using HTML, CSS, JS, and version control with Git/GitHub"
       ],
       color: "from-green-500 to-emerald-500",
-      level: 2,
       icon: <MapPin className="w-6 h-6" />
     },
     {
@@ -60,40 +56,9 @@ const Experience = () => {
         "Focused on team-based collaboration and version control workflows"
       ],
       color: "from-orange-500 to-red-500",
-      level: 1,
       icon: <Briefcase className="w-6 h-6" />
     }
   ];
-
-  const GrowthGlass = ({ level, color }: { level: number, color: string }) => {
-    const waterHeight = (level / 4) * 80; // Changed from 100 to 80 so level 4 doesn't completely fill
-    
-    return (
-      <div className="relative w-3 h-6 mx-auto"> {/* Made even smaller: w-5 h-8 -> w-3 h-6 */}
-        {/* Glass Container */}
-        <div className="absolute inset-0 border-2 border-gray-400 rounded-b-lg bg-transparent opacity-80">
-          {/* Water */}
-          <div 
-            className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t ${color} rounded-b-lg transition-all duration-1000 ease-out`}
-            style={{ height: `${waterHeight}%` }}
-          >
-            {/* Floating animation bubbles */}
-            <div className="relative h-full overflow-hidden">
-              <div className="absolute w-0.5 h-0.5 bg-white/30 rounded-full animate-ping" style={{ left: '20%', animationDelay: '0s', animationDuration: '2s' }}></div>
-              <div className="absolute w-0.5 h-0.5 bg-white/40 rounded-full animate-ping" style={{ left: '70%', animationDelay: '0.5s', animationDuration: '2.5s' }}></div>
-              <div className="absolute w-0.5 h-0.5 bg-white/30 rounded-full animate-ping" style={{ left: '45%', animationDelay: '1s', animationDuration: '3s' }}></div>
-              
-              {/* Water surface wave animation */}
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-white/20 animate-pulse"></div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Glass reflection effect */}
-        <div className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-white/40 to-transparent rounded-l-lg"></div>
-      </div>
-    );
-  };
 
   return (
     <section ref={containerRef} id="experience" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -151,15 +116,6 @@ const Experience = () => {
                   }`}>
                     <div className="w-full h-full bg-gray-900 rounded-full flex items-center justify-center text-white">
                       {exp.icon}
-                    </div>
-                  </div>
-                  
-                  {/* Growth Level Glass Indicator - positioned correctly at the central node */}
-                  <div className="absolute -top-2 -right-2">
-                    <div className={`w-5 h-7 rounded-lg bg-gray-800/20 backdrop-blur-sm border border-gray-600/30 flex items-end justify-center p-1 ${
-                      hoveredExp === index ? 'scale-110' : 'scale-100'
-                    } transition-all duration-300`}>
-                      <GrowthGlass level={exp.level} color={exp.color} />
                     </div>
                   </div>
                 </div>
@@ -243,4 +199,3 @@ const Experience = () => {
 };
 
 export default Experience;
-
