@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { User, Code, Settings, Award, Shield, ExternalLink } from 'lucide-react';
 import { useGSAP } from '../hooks/useGSAP';
@@ -12,7 +13,8 @@ const About = () => {
       year: "Sep 2024", 
       level: "Professional",
       skills: ["Windows", "Windows 10", "Microsoft Azure", "Virtualization", "VMware", "VirtualBox"],
-      hasCredential: false
+      hasCredential: true,
+      credentialUrl: "#" // Replace with actual URL when available
     },
     { 
       name: "Networking Basics", 
@@ -28,15 +30,16 @@ const About = () => {
       issuer: "NIELIT", 
       year: "Jul 2024", 
       level: "Foundation",
-      skills: ["Cybersecurity", "Cybersecurity Tools", "Cybersecurity Law", "Phishing"],
-      hasCredential: false
+      skills: ["Cybersecurity", "Cybersecurity Tools", "Cybersecurity Law", "Phishing", "Information Security"],
+      hasCredential: true,
+      credentialUrl: "#" // Replace with actual URL when available
     },
     { 
       name: "SQL Basic", 
       issuer: "HackerRank", 
       year: "Jun 2024", 
       level: "Intermediate",
-      skills: ["SQL"],
+      skills: ["SQL", "Database Management", "Query Optimization"],
       hasCredential: true,
       credentialUrl: "#" // Replace with actual HackerRank URL
     },
@@ -45,7 +48,7 @@ const About = () => {
       issuer: "HackerRank", 
       year: "Jun 2024", 
       level: "Intermediate",
-      skills: ["SQL"],
+      skills: ["SQL", "Advanced Queries", "Database Design", "Data Analysis"],
       hasCredential: true,
       credentialId: "5546df6bf89b",
       credentialUrl: "#" // Replace with actual HackerRank URL
@@ -65,7 +68,7 @@ const About = () => {
       issuer: "HCL GUVI", 
       year: "Apr 2021", 
       level: "Intermediate",
-      skills: ["Artificial Intelligence (AI)", "Python (Programming Language)"],
+      skills: ["Artificial Intelligence (AI)", "Python (Programming Language)", "Machine Learning", "Data Science"],
       hasCredential: true,
       credentialId: "ujSA6191668e3931t9",
       credentialUrl: "#" // Replace with actual GUVI URL

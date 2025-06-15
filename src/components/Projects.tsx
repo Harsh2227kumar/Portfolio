@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Github, Star } from 'lucide-react';
 import { useGSAP } from '../hooks/useGSAP';
@@ -30,6 +31,58 @@ const Projects = () => {
       features: ["Team collaboration", "Responsive components", "Version control workflow", "Modern architecture"],
       color: "green"
     }
+    
+    // Future Projects - Uncomment when ready to add more projects
+    /*
+    ,{
+      title: "E-Commerce Dashboard",
+      description: "A comprehensive admin dashboard for managing online store operations with real-time analytics and inventory management.",
+      tech: ["React.js", "Node.js", "MongoDB", "Express.js", "Chart.js"],
+      github: "#",
+      features: ["Real-time analytics", "Inventory management", "Order tracking", "Customer management"],
+      color: "orange"
+    },
+    {
+      title: "Task Management App",
+      description: "A collaborative task management application with team features, deadline tracking, and progress visualization.",
+      tech: ["Vue.js", "Firebase", "Vuex", "TypeScript", "PWA"],
+      github: "#",
+      features: ["Team collaboration", "Deadline tracking", "Progress visualization", "Offline support"],
+      color: "indigo"
+    },
+    {
+      title: "Weather Forecast App",
+      description: "A modern weather application with location-based forecasts, interactive maps, and weather alerts.",
+      tech: ["React Native", "Weather API", "Redux", "Maps SDK", "Push Notifications"],
+      github: "#",
+      features: ["Location-based forecasts", "Interactive maps", "Weather alerts", "Cross-platform"],
+      color: "cyan"
+    },
+    {
+      title: "Social Media Analytics",
+      description: "A comprehensive analytics platform for social media management with engagement tracking and content scheduling.",
+      tech: ["Angular", "D3.js", "Python", "Django", "PostgreSQL"],
+      github: "#",
+      features: ["Engagement tracking", "Content scheduling", "Analytics dashboard", "Multi-platform support"],
+      color: "pink"
+    },
+    {
+      title: "Learning Management System",
+      description: "An educational platform with course management, progress tracking, and interactive learning modules.",
+      tech: ["Next.js", "Prisma", "PostgreSQL", "Stripe", "WebRTC"],
+      github: "#",
+      features: ["Course management", "Progress tracking", "Video streaming", "Payment integration"],
+      color: "teal"
+    },
+    {
+      title: "IoT Device Monitor",
+      description: "A real-time monitoring system for IoT devices with data visualization and alert management.",
+      tech: ["React.js", "MQTT", "InfluxDB", "Grafana", "Docker"],
+      github: "#",
+      features: ["Real-time monitoring", "Data visualization", "Alert management", "Device control"],
+      color: "amber"
+    }
+    */
   ];
 
   const getColorClasses = (color: string) => {
