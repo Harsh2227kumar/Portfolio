@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Mail, Linkedin, Github, User, Send, MapPin, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -40,27 +39,36 @@ const Contact = () => {
       title: "Email",
       value: "harsh2227official@gmail.com",
       link: "mailto:harsh2227official@gmail.com",
-      color: "from-purple-500 to-pink-500",
-      bgColor: "bg-purple-600",
-      hoverColor: "hover:bg-purple-700"
+      color: "from-orange-500 to-red-500",
+      bgColor: "bg-orange-600",
+      hoverColor: "hover:bg-orange-700"
     },
     {
       icon: Linkedin,
       title: "LinkedIn",
-      value: "linkedin.com/in/harsh-kumar-560944237/",
-      link: "https://www.linkedin.com/in/harsh-kumar-560944237/",
-      color: "from-blue-500 to-cyan-500",
-      bgColor: "bg-blue-600",
-      hoverColor: "hover:bg-blue-700"
+      value: "linkedin.com/in/harshkumar", // Placeholder: Please update with actual LinkedIn URL
+      link: "#", // Placeholder
+      color: "from-pink-500 to-red-500",
+      bgColor: "bg-pink-600",
+      hoverColor: "hover:bg-pink-700"
     },
     {
       icon: Github,
       title: "GitHub",
-      value: "github.com/Harsh2227kumar/",
-      link: "https://github.com/Harsh2227kumar/",
+      value: "github.com/harsh2227kumar",
+      link: "https://github.com/harsh2227kumar",
       color: "from-gray-500 to-gray-700",
       bgColor: "bg-gray-600",
       hoverColor: "hover:bg-gray-700"
+    },
+    {
+      icon: Phone,
+      title: "Phone",
+      value: "+91 94056 77894",
+      link: "tel:+919405677894",
+      color: "from-green-500 to-emerald-500",
+      bgColor: "bg-green-600",
+      hoverColor: "hover:bg-green-700"
     }
   ];
 
@@ -68,19 +76,18 @@ const Contact = () => {
     <section ref={containerRef} id="contact" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-20">
           <div className="gsap-text inline-block">
-            <h2 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-purple-400 via-blue-400 to-green-400 bg-clip-text text-transparent">
+            <h2 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-orange-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">
               Get In Touch
             </h2>
           </div>
-          <div className="gsap-text w-32 h-1.5 bg-gradient-to-r from-purple-500 via-blue-500 to-green-500 mx-auto mb-8 rounded-full"></div>
+          <div className="gsap-text w-32 h-1.5 bg-gradient-to-r from-orange-500 via-pink-500 to-yellow-500 mx-auto mb-8 rounded-full"></div>
           <p className="gsap-text text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
             Ready to bring your ideas to life? Let's collaborate and create something amazing together.
           </p>
@@ -90,7 +97,7 @@ const Contact = () => {
           {/* Contact Methods - Left Side */}
           <div className="lg:col-span-2 space-y-8">
             <div className="gsap-text">
-              <h3 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              <h3 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
                 Let's Connect
               </h3>
               <p className="text-gray-300 leading-relaxed text-lg mb-8">
@@ -108,13 +115,13 @@ const Contact = () => {
                   rel={method.link.startsWith('http') ? 'noopener noreferrer' : ''}
                   className="gsap-card group block"
                 >
-                  <div className="relative p-6 bg-gray-800/40 backdrop-blur-sm rounded-2xl border border-gray-700/50 hover:border-gray-600 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 hover:bg-gray-800/60">
+                  <div className="relative p-6 bg-gray-800/40 backdrop-blur-sm rounded-2xl border border-gray-700/50 hover:border-gray-600 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20 hover:bg-gray-800/60">
                     <div className="flex items-center space-x-5">
                       <div className={`p-4 ${method.bgColor} ${method.hoverColor} rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                         <method.icon size={28} className="text-white" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-semibold text-white text-lg mb-1 group-hover:text-purple-300 transition-colors">
+                        <h4 className="font-semibold text-white text-lg mb-1 group-hover:text-orange-300 transition-colors">
                           {method.title}
                         </h4>
                         <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
@@ -122,7 +129,7 @@ const Contact = () => {
                         </p>
                       </div>
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full flex items-center justify-center">
                           <Send size={16} className="text-white" />
                         </div>
                       </div>
@@ -137,7 +144,7 @@ const Contact = () => {
             {/* Location Card */}
             <div className="gsap-card bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/50">
               <div className="flex items-center space-x-4 mb-4">
-                <div className="p-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg">
+                <div className="p-3 bg-gradient-to-r from-orange-600 to-pink-600 rounded-lg">
                   <MapPin size={24} className="text-white" />
                 </div>
                 <h4 className="text-xl font-semibold text-white">Location</h4>
@@ -173,7 +180,7 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       placeholder="Your full name"
-                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/20 h-12 rounded-xl transition-all duration-300"
+                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500/20 h-12 rounded-xl transition-all duration-300"
                     />
                   </div>
 
@@ -189,7 +196,7 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       placeholder="your.email@example.com"
-                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/20 h-12 rounded-xl transition-all duration-300"
+                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500/20 h-12 rounded-xl transition-all duration-300"
                     />
                   </div>
                 </div>
@@ -206,14 +213,14 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     placeholder="Tell me about your project, ideas, or just say hello..."
-                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/20 focus:outline-none transition-all duration-300 resize-none"
+                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500/20 focus:outline-none transition-all duration-300 resize-none"
                   />
                 </div>
 
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="gsap-button w-full h-14 bg-gradient-to-r from-purple-600 via-blue-600 to-green-600 hover:from-purple-700 hover:via-blue-700 hover:to-green-700 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="gsap-button w-full h-14 bg-gradient-to-r from-orange-600 via-pink-600 to-green-600 hover:from-orange-700 hover:via-pink-700 hover:to-green-700 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center space-x-2">
@@ -229,8 +236,8 @@ const Contact = () => {
                 </Button>
               </form>
 
-              <div className="mt-8 p-4 bg-purple-500/10 border border-purple-500/20 rounded-xl">
-                <p className="text-purple-300 text-sm">
+              <div className="mt-8 p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl">
+                <p className="text-orange-300 text-sm">
                   💡 <strong>Quick tip:</strong> Include details about your project timeline and budget for faster response!
                 </p>
               </div>

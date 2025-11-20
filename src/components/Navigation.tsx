@@ -30,11 +30,11 @@ const Navigation = () => {
 
   return (
     <nav className={`fixed top-0 w-full z-40 transition-all duration-300 ${
-      scrolled ? 'bg-gray-900/95 backdrop-blur-md border-b border-purple-500/20' : 'bg-transparent'
+      scrolled ? 'bg-gray-900/95 backdrop-blur-md border-b border-orange-500/20' : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          <div className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
             Portfolio
           </div>
 
@@ -44,10 +44,10 @@ const Navigation = () => {
               <button
                 key={item.name}
                 onClick={() => scrollToSection(item.href)}
-                className="text-gray-300 hover:text-purple-400 transition-colors duration-300 relative group"
+                className="text-gray-300 hover:text-orange-400 transition-colors duration-300 relative group"
               >
                 {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-400 transition-all duration-300 group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-400 transition-all duration-300 group-hover:w-full"></span>
               </button>
             ))}
           </div>
@@ -56,7 +56,7 @@ const Navigation = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-300 hover:text-purple-400 transition-colors duration-300"
+              className="text-gray-300 hover:text-orange-400 transition-colors duration-300"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -70,7 +70,7 @@ const Navigation = () => {
               <button
                 key={item.name}
                 onClick={() => scrollToSection(item.href)}
-                className="block w-full text-left px-4 py-2 text-gray-300 hover:text-purple-400 transition-colors duration-300"
+                className="block w-full text-left px-4 py-2 text-gray-300 hover:text-orange-400 transition-colors duration-300"
               >
                 {item.name}
               </button>

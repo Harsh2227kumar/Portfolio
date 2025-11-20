@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 
 declare global {
@@ -31,7 +30,7 @@ const VantaBackground = () => {
             minWidth: 200.00,
             scale: 1.00,
             scaleMobile: 1.00,
-            color: 0x8B5CF6, // Purple color to match theme
+            color: 0xFF5733, // Updated Vanta color to a reddish-orange for the new theme
             backgroundColor: 0x111827, // Dark gray background
             points: 10.00,
             maxDistance: 20.00,
