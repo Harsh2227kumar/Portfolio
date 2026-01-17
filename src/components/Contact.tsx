@@ -11,18 +11,38 @@ const Contact = () => {
     email: '',
     message: ''
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resultMsg, setResultMsg] = useState("");
   const containerRef = useGSAP();
 
+  // -------------------------------
+  //     WEB3FORMS INTEGRATION
+  // -------------------------------
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    console.log('Form submitted:', formData);
-    setFormData({ name: '', email: '', message: '' });
+
+    const form = new FormData();
+    form.append("access_key", "0c7064db-4ebd-41e9-91a2-fbb203f4c205");
+    form.append("name", formData.name);
+    form.append("email", formData.email);
+    form.append("message", formData.message);
+
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: form
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setResultMsg("Message Sent Successfully!");
+      setFormData({ name: "", email: "", message: "" });
+    } else {
+      setResultMsg("Something went wrong. Please try again.");
+    }
+
     setIsSubmitting(false);
   };
 
@@ -46,8 +66,8 @@ const Contact = () => {
     {
       icon: Linkedin,
       title: "LinkedIn",
-      value: "linkedin.com/in/harshkumar", // Placeholder: Please update with actual LinkedIn URL
-      link: "#", // Placeholder
+      value: "linkedin.com/in/harshkumar",
+      link: "#",
       color: "from-pink-500 to-red-500",
       bgColor: "bg-pink-600",
       hoverColor: "hover:bg-pink-700"
@@ -60,26 +80,13 @@ const Contact = () => {
       color: "from-gray-500 to-gray-700",
       bgColor: "bg-gray-600",
       hoverColor: "hover:bg-gray-700"
-    },
-    {
-      icon: Phone,
-      title: "Phone",
-      value: "+91 94056 77894",
-      link: "tel:+919405677894",
-      color: "from-green-500 to-emerald-500",
-      bgColor: "bg-green-600",
-      hoverColor: "hover:bg-green-700"
     }
   ];
 
   return (
     <section ref={containerRef} id="contact" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-
-      </div>
-
       <div className="max-w-7xl mx-auto relative z-10">
+        
         {/* Header */}
         <div className="text-center mb-20">
           <div className="gsap-text inline-block">
@@ -94,7 +101,8 @@ const Contact = () => {
         </div>
 
         <div className="grid lg:grid-cols-5 gap-12 items-start">
-          {/* Contact Methods - Left Side */}
+          
+          {/* Left Contact Cards */}
           <div className="lg:col-span-2 space-y-8">
             <div className="gsap-text">
               <h3 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
@@ -105,14 +113,13 @@ const Contact = () => {
               </p>
             </div>
 
-            {/* Contact Cards */}
             <div className="space-y-4">
               {contactMethods.map((method, index) => (
                 <a
                   key={index}
                   href={method.link}
                   target={method.link.startsWith('http') ? '_blank' : '_self'}
-                  rel={method.link.startsWith('http') ? 'noopener noreferrer' : ''}
+                  rel="noopener noreferrer"
                   className="gsap-card group block"
                 >
                   <div className="relative p-6 bg-gray-800/40 backdrop-blur-sm rounded-2xl border border-gray-700/50 hover:border-gray-600 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20 hover:bg-gray-800/60">
@@ -134,7 +141,6 @@ const Contact = () => {
                         </div>
                       </div>
                     </div>
-                    {/* Gradient border effect */}
                     <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${method.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 -z-10`}></div>
                   </div>
                 </a>
@@ -149,24 +155,22 @@ const Contact = () => {
                 </div>
                 <h4 className="text-xl font-semibold text-white">Location</h4>
               </div>
-              <p className="text-gray-300">
-                Nagpur, Maharashtra, India
-              </p>
-              <p className="text-gray-400 text-sm mt-2">
-                Open to remote work & relocation
-              </p>
+              <p className="text-gray-300">Nagpur, Maharashtra, India</p>
+              <p className="text-gray-400 text-sm mt-2">Open to remote work & relocation</p>
             </div>
           </div>
 
-          {/* Contact Form - Right Side */}
+          {/* Contact Form */}
           <div className="lg:col-span-3">
             <div className="gsap-card bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm p-8 lg:p-10 rounded-3xl border border-gray-700/50 shadow-2xl">
+
               <div className="mb-8">
                 <h3 className="text-2xl font-bold text-white mb-3">Send Message</h3>
                 <p className="text-gray-400">Fill out the form below and I'll get back to you as soon as possible.</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-white font-medium">
@@ -176,11 +180,11 @@ const Contact = () => {
                       id="name"
                       name="name"
                       type="text"
+                      required
                       value={formData.name}
                       onChange={handleChange}
-                      required
                       placeholder="Your full name"
-                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500/20 h-12 rounded-xl transition-all duration-300"
+                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-orange-500 h-12 rounded-xl"
                     />
                   </div>
 
@@ -192,11 +196,11 @@ const Contact = () => {
                       id="email"
                       name="email"
                       type="email"
+                      required
                       value={formData.email}
                       onChange={handleChange}
-                      required
                       placeholder="your.email@example.com"
-                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500/20 h-12 rounded-xl transition-all duration-300"
+                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-orange-500 h-12 rounded-xl"
                     />
                   </div>
                 </div>
@@ -208,19 +212,19 @@ const Contact = () => {
                   <textarea
                     id="message"
                     name="message"
+                    required
                     rows={6}
                     value={formData.message}
                     onChange={handleChange}
-                    required
                     placeholder="Tell me about your project, ideas, or just say hello..."
-                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500/20 focus:outline-none transition-all duration-300 resize-none"
+                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:border-orange-500 resize-none"
                   />
                 </div>
 
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="gsap-button w-full h-14 bg-gradient-to-r from-orange-600 via-pink-600 to-green-600 hover:from-orange-700 hover:via-pink-700 hover:to-green-700 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="gsap-button w-full h-14 bg-gradient-to-r from-orange-600 via-pink-600 to-green-600 text-white font-semibold rounded-xl disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center space-x-2">
@@ -234,6 +238,13 @@ const Contact = () => {
                     </div>
                   )}
                 </Button>
+
+                {/* Web3Forms Response Message */}
+                {resultMsg && (
+                  <p className="text-center text-green-400 font-medium pt-2">
+                    {resultMsg}
+                  </p>
+                )}
               </form>
 
               <div className="mt-8 p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl">
@@ -241,9 +252,11 @@ const Contact = () => {
                   💡 <strong>Quick tip:</strong> Include details about your project timeline and budget for faster response!
                 </p>
               </div>
+
             </div>
           </div>
         </div>
+
       </div>
     </section>
   );

@@ -12,29 +12,29 @@ const Education = () => {
       location: "Nagpur, Maharashtra",
       duration: "Aug 2024 - May 2028",
       status: "Pursuing",
-      gpa: "7.8/10 CGPA",
+      gpa: "7.5/10 CGPA",
       coreSubjects: ["Data Structures & Algorithms", "Operating Systems", "Design & Analysis of Algorithms", "Object-Oriented Programming (Java)", "Database Management Systems", "Computer Networks", "Software Engineering", "Web Technologies", "Machine Learning"]
     },
     // Note: Assuming two more entries will be added here to fill the three columns for the desired layout.
     // Placeholder 1:
     {
       degree: "HSC (Class 12th)",
-      institution: "City Public School, Nagpur",
+      institution: "Tuli Public School, Nagpur",
       location: "Nagpur, Maharashtra",
       duration: "2022",
       status: "Completed",
-      gpa: "95.2%",
+      gpa: "64%",
       coreSubjects: ["Physics", "Chemistry", "Mathematics", "Computer Science", "English"]
     },
     // Placeholder 2:
     {
       degree: "SSC (Class 10th)",
-      institution: "State Board, Nagpur",
+      institution: "Delhi Public School, Nagpur",
       location: "Nagpur, Maharashtra",
       duration: "2020",
       status: "Completed",
-      gpa: "92%",
-      coreSubjects: ["Science", "Social Science", "Mathematics", "English", "Hindi"]
+      gpa: "78%",
+      coreSubjects: ["Science", "Social Science", "Mathematics", "English", "Hindi", "IT"]
     }
   ];
 
