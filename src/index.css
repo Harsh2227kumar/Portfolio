@@ -1,108 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
-
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    /* --- Primary Theme Colors (Orange) --- */
-    --primary: 24 80% 50%;
-    --primary-foreground: 210 40% 98%;
-
-    /* --- Secondary Theme Colors (Pink) --- */
-    --secondary: 330 40% 96%;
-    --secondary-foreground: 24 80% 50%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 24 90% 60%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    /* --- Primary Theme Colors (Orange) --- */
-    --primary: 24 80% 50%;
-    --primary-foreground: 210 40% 98%;
-
-    /* --- Secondary Theme Colors (Dark Pink) --- */
-    --secondary: 330 30% 25%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 330 60% 60%;
-
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+/* ─── LIGHT (default) ────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --bg:             #FFFFFF;
+  --ink:            #1A1A1A;
+  --ink-mid:        #5C5C5C;
+  --ink-faint:      #ABABAB;
+  --rule:           #E4E4E0;
+  --green:          #16A34A;
+  --btn-bg:         #1A1A1A;
+  --btn-fg:         #FFFFFF;
+  --marquee-item:   #CBCBC6;
+  --marquee-dot:    #E4E4E0;
+  --skill-bar:      #1A1A1A;
+  --serif:          'Instrument Serif', Georgia, serif;
+  --sans:           'Instrument Sans', system-ui, sans-serif;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
+/* ─── DARK ───────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg:             #111110;
+  --ink:            #F0EFE9;
+  --ink-mid:        #8A8A82;
+  --ink-faint:      #4A4A46;
+  --rule:           #2A2A28;
+  --green:          #22C55E;
+  --btn-bg:         #F0EFE9;
+  --btn-fg:         #111110;
+  --marquee-item:   #3A3A36;
+  --marquee-dot:    #2A2A28;
+  --skill-bar:      #F0EFE9;
+}
 
-  body {
-    @apply bg-background text-foreground;
-  }
+/* ─── RESET ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ─── SCROLL REVEAL ──────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+              transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 90ms; }
+.reveal-d2 { transition-delay: 180ms; }
+.reveal-d3 { transition-delay: 270ms; }
+
+/* ─── AVAILABILITY DOT ───────────────────────────── */
+@keyframes pulse-ring {
+  0%   { transform: scale(1);   opacity: 0.9; }
+  75%  { transform: scale(2.5); opacity: 0; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* ─── MARQUEE ────────────────────────────────────── */
+@keyframes marquee-run {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-run 34s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+
+/* ─── EDITORIAL INPUT ────────────────────────────── */
+.ed-input {
+  font-family: var(--sans);
+  font-size: 14.5px;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 0;
+  width: 100%;
+  outline: none;
+  resize: none;
+  transition: border-color 0.2s, color 0.3s;
+}
+.ed-input::placeholder { color: var(--ink-faint); }
+.ed-input:focus { border-color: var(--ink); }
+
+/* ─── SCROLLBAR ──────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 99px; }
+
+/* ─── SPIN ───────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.7s linear infinite; display: inline-block; }
+
+/* ─── THEME TOGGLE BTN ───────────────────────────── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: transparent;
+  cursor: pointer;
+  color: var(--ink-mid);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: var(--rule);
+  color: var(--ink);
+}
+
+/* ─── RESPONSIVE HELPERS ─────────────────────────── */
+@media (max-width: 720px) {
+  .about-2col   { grid-template-columns: 1fr !important; }
+  .contact-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 620px) {
+  .exp-row, .proj-row, .edu-row { grid-template-columns: 1fr !important; gap: 10px !important; }
+}
+@media (max-width: 900px) {
+  .skills-grid { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 520px) {
+  .skills-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 720px) {
+  .cert-grid { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 440px) {
+  .cert-grid { grid-template-columns: 1fr !important; }
 }

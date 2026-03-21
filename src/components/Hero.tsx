@@ -1,71 +1,172 @@
-import React, { useEffect } from 'react';
-import { Github, Linkedin, Mail } from 'lucide-react';
-import { useGSAP } from '../hooks/useGSAP';
+import React, { useEffect, useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
+
+const MARQUEE_ITEMS = [
+  'Docker', 'Terraform', 'Jenkins CI/CD', 'Kubernetes', 'Google Cloud',
+  'DigitalOcean', 'React.js', 'Flask', 'Python', 'Linux',
+  'Bash Scripting', 'PostgreSQL', 'REST APIs', 'Infrastructure as Code',
+  'Node.js', 'Git', 'NGINX', 'SQLite',
+];
 
 const Hero = () => {
-  const containerRef = useGSAP();
+  const { t } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 80);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const fade = (delay: number): React.CSSProperties => ({
+    opacity: mounted ? 1 : 0,
+    transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+    transition: `opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms,
+                 transform 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+  });
+
+  const doubled = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
 
   return (
-    <section ref={containerRef} id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="relative z-20 text-center px-4 sm:px-6 lg:px-8">
-        <div>
-          <h1 className="gsap-hero-title text-5xl md:text-7xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-orange-400 via-pink-500 to-yellow-400 bg-clip-text text-transparent">
-              Harsh Kumar
-            </span>
-          </h1>
-          <h2 className="gsap-hero-subtitle text-2xl md:text-3xl text-gray-300 mb-4">
-            <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
-              DevOps Engineer & Web Development Enthusiast
-            </span>
-          </h2>
-          <p className="gsap-text text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            B.Tech Computer Science Engineering Student
-          </p>
-          <p className="gsap-text text-md text-gray-500 mb-12 max-w-xl mx-auto">
-            Passionate about containerized deployments, CI/CD pipelines, and modern web development
-          </p>
-          
-          <div className="flex justify-center space-x-6 mb-12">
-            <a
-              href="https://github.com/harsh2227kumar"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gsap-button p-3 bg-orange-600 hover:bg-orange-700 rounded-full transition-all duration-300"
-            >
-              <Github size={24} />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/harsh-2227-kumar/" // Placeholder: Update with actual LinkedIn URL
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gsap-button p-3 bg-pink-600 hover:bg-pink-700 rounded-full transition-all duration-300"
-            >
-              <Linkedin size={24} />
-            </a>
-            <a
-              href="mailto:harsh2227official@gmail.com"
-              className="gsap-button p-3 bg-green-600 hover:bg-green-700 rounded-full transition-all duration-300"
-            >
-              <Mail size={24} />
-            </a>
-          </div>
+    <>
+      {/* ── HERO ── */}
+      <section
+        id="home"
+        style={{
+          maxWidth: 1100, margin: '0 auto',
+          padding: 'clamp(64px,10vw,128px) clamp(20px,5vw,60px) clamp(48px,7vw,96px)',
+        }}
+      >
+        {/* Availability badge */}
+        <div style={{
+          ...fade(0),
+          display: 'inline-flex', alignItems: 'center', gap: 10,
+          fontFamily: "'Instrument Sans', system-ui, sans-serif",
+          fontSize: 13, color: t.inkMid, marginBottom: 32,
+        }}>
+          <span style={{ position: 'relative', width: 8, height: 8, flexShrink: 0 }}>
+            <span style={{
+              position: 'absolute', inset: 0, borderRadius: '50%',
+              background: t.green,
+              animation: 'pulse-ring 1.6s cubic-bezier(0,0,0.2,1) infinite',
+            }} />
+            <span style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: t.green }} />
+          </span>
+          Open to internships &amp; opportunities
+          <style>{`
+            @keyframes pulse-ring {
+              0%   { transform:scale(1);   opacity:.9; }
+              75%  { transform:scale(2.6); opacity:0;  }
+              100% { transform:scale(2.6); opacity:0;  }
+            }
+          `}</style>
+        </div>
 
-          <button
-            onClick={() => document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })}
-            className="gsap-button px-8 py-4 bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-700 hover:to-pink-700 rounded-full text-white font-semibold transition-all duration-300"
+        {/* Name */}
+        <h1 style={{
+          ...fade(40),
+          fontFamily: "'Instrument Serif', Georgia, serif",
+          fontSize: 'clamp(56px,10vw,108px)',
+          lineHeight: 1.0, letterSpacing: '-0.028em',
+          color: t.ink, marginBottom: 24,
+          transition: 'color 0.3s',
+        }}>
+          Harsh<br />
+          <em style={{ fontStyle: 'italic', color: t.inkFaint, transition: 'color 0.3s' }}>Kumar</em>
+        </h1>
+
+        {/* Tagline */}
+        <p style={{
+          ...fade(100),
+          fontFamily: "'Instrument Sans', system-ui, sans-serif",
+          fontSize: 'clamp(15px,1.5vw,18px)',
+          color: t.inkMid, lineHeight: 1.7,
+          maxWidth: 560, marginBottom: 40,
+          transition: 'color 0.3s',
+        }}>
+          DevOps Engineer &amp; Full-Stack Developer in Nagpur&nbsp;🇮🇳<br />
+          B.Tech CS at Symbiosis Institute of Technology. Building containerised
+          systems, CI/CD pipelines, and modern web experiences — with internship
+          experience at Elevate Labs.
+        </p>
+
+        {/* CTAs */}
+        <div style={{ ...fade(160), display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          {/* Primary */}
+          <a
+            href="#contact"
+            onClick={(e) => { e.preventDefault(); document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }); }}
+            style={{
+              fontFamily: "'Instrument Sans', system-ui, sans-serif",
+              fontSize: 13.5, fontWeight: 600,
+              background: t.btnBg, color: t.btnFg,
+              padding: '11px 24px', borderRadius: 999,
+              transition: 'background 0.3s, color 0.3s, opacity 0.15s',
+              display: 'inline-block',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.75')}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
           >
-            Explore My Work
-          </button>
-        </div>
-      </div>
+            Work with me
+          </a>
 
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20">
-        <div className="w-6 h-10 border-2 border-orange-400 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-orange-400 rounded-full mt-2 animate-pulse"></div>
+          {/* Ghost btns */}
+          {[
+            { label: 'GitHub ↗',   href: 'https://github.com/harsh2227kumar' },
+            { label: 'LinkedIn ↗', href: 'https://www.linkedin.com/in/harsh-2227-kumar/' },
+          ].map((btn) => (
+            <a
+              key={btn.label}
+              href={btn.href}
+              target="_blank" rel="noopener noreferrer"
+              style={{
+                fontFamily: "'Instrument Sans', system-ui, sans-serif",
+                fontSize: 13.5, fontWeight: 500,
+                color: t.outlineFg,
+                border: `1px solid ${t.outlineBorder}`,
+                padding: '11px 24px', borderRadius: 999,
+                transition: 'color 0.2s, border-color 0.2s',
+                display: 'inline-block',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = t.ink;
+                e.currentTarget.style.borderColor = t.inkMid;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = t.outlineFg;
+                e.currentTarget.style.borderColor = t.outlineBorder;
+              }}
+            >
+              {btn.label}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* ── MARQUEE ── */}
+      <div style={{
+        overflow: 'hidden',
+        borderTop: `1px solid ${t.rule}`,
+        borderBottom: `1px solid ${t.rule}`,
+        padding: '13px 0',
+        transition: 'border-color 0.3s',
+      }}>
+        <div className="marquee-track">
+          {doubled.map((item, i) => (
+            <span key={i} style={{
+              whiteSpace: 'nowrap',
+              fontFamily: "'Instrument Sans', system-ui, sans-serif",
+              fontSize: 11.5, fontWeight: 500,
+              letterSpacing: '0.08em', textTransform: 'uppercase',
+              color: t.marqueeItem, padding: '0 24px',
+              transition: 'color 0.3s',
+            }}>
+              {item}
+              <span style={{ marginLeft: 24, color: t.marqueeDot }}>·</span>
+            </span>
+          ))}
         </div>
       </div>
-    </section>
+    </>
   );
 };
 

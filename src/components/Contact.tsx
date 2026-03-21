@@ -1,262 +1,174 @@
 import React, { useState } from 'react';
-import { Mail, Linkedin, Github, User, Send, MapPin, Phone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useGSAP } from '../hooks/useGSAP';
+import { useReveal } from '../hooks/useReveal';
+import { useTheme } from '../context/ThemeContext';
+
+const LINKS = [
+  { label: 'Email',    value: 'harsh2227official@gmail.com',      href: 'mailto:harsh2227official@gmail.com' },
+  { label: 'LinkedIn', value: 'linkedin.com/in/harsh-2227-kumar',  href: 'https://www.linkedin.com/in/harsh-2227-kumar/' },
+  { label: 'GitHub',   value: 'github.com/harsh2227kumar',         href: 'https://github.com/harsh2227kumar' },
+  { label: 'Location', value: 'Nagpur, Maharashtra, India',        href: null },
+];
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const { t } = useTheme();
+  const ref = useReveal();
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [sending, setSending] = useState(false);
+  const [msg, setMsg]   = useState('');
+  const [ok, setOk]     = useState(false);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [resultMsg, setResultMsg] = useState("");
-  const containerRef = useGSAP();
+  const SANS  = "'Instrument Sans', system-ui, sans-serif";
+  const SERIF = "'Instrument Serif', Georgia, serif";
 
-  // -------------------------------
-  //     WEB3FORMS INTEGRATION
-  // -------------------------------
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    const form = new FormData();
-    form.append("access_key", "0c7064db-4ebd-41e9-91a2-fbb203f4c205");
-    form.append("name", formData.name);
-    form.append("email", formData.email);
-    form.append("message", formData.message);
-
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: form
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      setResultMsg("Message Sent Successfully!");
-      setFormData({ name: "", email: "", message: "" });
-    } else {
-      setResultMsg("Something went wrong. Please try again.");
+    setSending(true); setMsg('');
+    const fd = new FormData();
+    fd.append('access_key', '0c7064db-4ebd-41e9-91a2-fbb203f4c205');
+    fd.append('name', form.name);
+    fd.append('email', form.email);
+    fd.append('message', form.message);
+    try {
+      const res  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.success) {
+        setMsg("Message sent — I'll be in touch soon!"); setOk(true);
+        setForm({ name: '', email: '', message: '' });
+      } else {
+        setMsg('Something went wrong. Please try again.'); setOk(false);
+      }
+    } catch {
+      setMsg('Network error. Please try again.'); setOk(false);
     }
-
-    setIsSubmitting(false);
+    setSending(false);
   };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const contactMethods = [
-    {
-      icon: Mail,
-      title: "Email",
-      value: "harsh2227official@gmail.com",
-      link: "mailto:harsh2227official@gmail.com",
-      color: "from-orange-500 to-red-500",
-      bgColor: "bg-orange-600",
-      hoverColor: "hover:bg-orange-700"
-    },
-    {
-      icon: Linkedin,
-      title: "LinkedIn",
-      value: "linkedin.com/in/harshkumar",
-      link: "#",
-      color: "from-pink-500 to-red-500",
-      bgColor: "bg-pink-600",
-      hoverColor: "hover:bg-pink-700"
-    },
-    {
-      icon: Github,
-      title: "GitHub",
-      value: "github.com/harsh2227kumar",
-      link: "https://github.com/harsh2227kumar",
-      color: "from-gray-500 to-gray-700",
-      bgColor: "bg-gray-600",
-      hoverColor: "hover:bg-gray-700"
-    }
-  ];
 
   return (
-    <section ref={containerRef} id="contact" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto relative z-10">
-        
-        {/* Header */}
-        <div className="text-center mb-20">
-          <div className="gsap-text inline-block">
-            <h2 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-orange-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">
-              Get In Touch
-            </h2>
-          </div>
-          <div className="gsap-text w-32 h-1.5 bg-gradient-to-r from-orange-500 via-pink-500 to-yellow-500 mx-auto mb-8 rounded-full"></div>
-          <p className="gsap-text text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Ready to bring your ideas to life? Let's collaborate and create something amazing together.
+    <section
+      id="contact"
+      ref={ref as React.RefObject<HTMLElement>}
+      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(56px,8vw,96px) clamp(20px,5vw,60px) clamp(80px,12vw,140px)' }}
+    >
+      <hr style={{ border: 'none', borderTop: `1px solid ${t.rule}`, marginBottom: 'clamp(56px,8vw,96px)', transition: 'border-color 0.3s' }} />
+
+      <p className="reveal" style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 44, transition: 'color 0.3s' }}>
+        Contact
+      </p>
+
+      <div className="contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(32px,6vw,80px)', alignItems: 'start' }}>
+
+        {/* Left */}
+        <div>
+          <h2 className="reveal" style={{ fontFamily: SERIF, fontSize: 'clamp(28px,4vw,48px)', lineHeight: 1.12, letterSpacing: '-0.02em', color: t.ink, marginBottom: 20, transition: 'color 0.3s' }}>
+            Let's build<br />
+            <em style={{ fontStyle: 'italic', color: t.inkFaint, transition: 'color 0.3s' }}>something great</em><br />
+            together.
+          </h2>
+
+          <p className="reveal reveal-d1" style={{ fontFamily: SANS, fontSize: 14.5, color: t.inkMid, lineHeight: 1.72, marginBottom: 36, transition: 'color 0.3s' }}>
+            Open to DevOps roles, full-stack projects, internships, and collaborations.
+            I respond to every message.
           </p>
-        </div>
 
-        <div className="grid lg:grid-cols-5 gap-12 items-start">
-          
-          {/* Left Contact Cards */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="gsap-text">
-              <h3 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
-                Let's Connect
-              </h3>
-              <p className="text-gray-300 leading-relaxed text-lg mb-8">
-                I'm always excited to discuss new opportunities, innovative projects, or just chat about the latest in technology and development.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {contactMethods.map((method, index) => (
+          <div className="reveal reveal-d2">
+            {LINKS.map((link, i) => {
+              const inner = (
+                <div style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                  padding: '14px 0',
+                  borderBottom: `1px solid ${t.rule}`,
+                  ...(i === 0 ? { borderTop: `1px solid ${t.rule}` } : {}),
+                  transition: 'border-color 0.3s',
+                }}>
+                  <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 500, color: t.ink, transition: 'color 0.3s' }}>{link.label}</span>
+                  <span style={{ fontFamily: SANS, fontSize: 12.5, color: t.inkFaint, display: 'flex', alignItems: 'center', gap: 4, transition: 'color 0.3s' }}>
+                    {link.value} {link.href && '↗'}
+                  </span>
+                </div>
+              );
+              return link.href ? (
                 <a
-                  key={index}
-                  href={method.link}
-                  target={method.link.startsWith('http') ? '_blank' : '_self'}
-                  rel="noopener noreferrer"
-                  className="gsap-card group block"
+                  key={i} href={link.href}
+                  target={link.href.startsWith('http') ? '_blank' : undefined}
+                  rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  style={{ display: 'block', transition: 'opacity 0.15s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.6')}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
                 >
-                  <div className="relative p-6 bg-gray-800/40 backdrop-blur-sm rounded-2xl border border-gray-700/50 hover:border-gray-600 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20 hover:bg-gray-800/60">
-                    <div className="flex items-center space-x-5">
-                      <div className={`p-4 ${method.bgColor} ${method.hoverColor} rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
-                        <method.icon size={28} className="text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-white text-lg mb-1 group-hover:text-orange-300 transition-colors">
-                          {method.title}
-                        </h4>
-                        <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                          {method.value}
-                        </p>
-                      </div>
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full flex items-center justify-center">
-                          <Send size={16} className="text-white" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${method.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 -z-10`}></div>
-                  </div>
+                  {inner}
                 </a>
-              ))}
-            </div>
-
-            {/* Location Card */}
-            <div className="gsap-card bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/50">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="p-3 bg-gradient-to-r from-orange-600 to-pink-600 rounded-lg">
-                  <MapPin size={24} className="text-white" />
-                </div>
-                <h4 className="text-xl font-semibold text-white">Location</h4>
-              </div>
-              <p className="text-gray-300">Nagpur, Maharashtra, India</p>
-              <p className="text-gray-400 text-sm mt-2">Open to remote work & relocation</p>
-            </div>
-          </div>
-
-          {/* Contact Form */}
-          <div className="lg:col-span-3">
-            <div className="gsap-card bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm p-8 lg:p-10 rounded-3xl border border-gray-700/50 shadow-2xl">
-
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold text-white mb-3">Send Message</h3>
-                <p className="text-gray-400">Fill out the form below and I'll get back to you as soon as possible.</p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="text-white font-medium">
-                      Full Name *
-                    </Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Your full name"
-                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-orange-500 h-12 rounded-xl"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white font-medium">
-                      Email Address *
-                    </Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="your.email@example.com"
-                      className="bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-orange-500 h-12 rounded-xl"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="message" className="text-white font-medium">
-                    Message *
-                  </Label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={6}
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Tell me about your project, ideas, or just say hello..."
-                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:border-orange-500 resize-none"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="gsap-button w-full h-14 bg-gradient-to-r from-orange-600 via-pink-600 to-green-600 text-white font-semibold rounded-xl disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      <span>Sending...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <Send size={20} />
-                      <span>Send Message</span>
-                    </div>
-                  )}
-                </Button>
-
-                {/* Web3Forms Response Message */}
-                {resultMsg && (
-                  <p className="text-center text-green-400 font-medium pt-2">
-                    {resultMsg}
-                  </p>
-                )}
-              </form>
-
-              <div className="mt-8 p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl">
-                <p className="text-orange-300 text-sm">
-                  💡 <strong>Quick tip:</strong> Include details about your project timeline and budget for faster response!
-                </p>
-              </div>
-
-            </div>
+              ) : <div key={i}>{inner}</div>;
+            })}
           </div>
         </div>
 
+        {/* Right — form */}
+        <form
+          className="reveal reveal-d1"
+          onSubmit={handleSubmit}
+          style={{ display: 'flex', flexDirection: 'column', gap: 20 }}
+        >
+          {[
+            { key: 'name',    label: 'Your name',     type: 'text',  placeholder: 'Harsh Kumar' },
+            { key: 'email',   label: 'Email address', type: 'email', placeholder: 'you@example.com' },
+          ].map((field) => (
+            <div key={field.key} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: t.inkFaint, transition: 'color 0.3s' }}>
+                {field.label}
+              </label>
+              <input
+                type={field.type} required
+                placeholder={field.placeholder}
+                value={(form as any)[field.key]}
+                onChange={(e) => setForm((p) => ({ ...p, [field.key]: e.target.value }))}
+                className="ed-input"
+              />
+            </div>
+          ))}
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: t.inkFaint, transition: 'color 0.3s' }}>
+              Message
+            </label>
+            <textarea
+              required rows={5}
+              placeholder="Tell me about your project or just say hello…"
+              value={form.message}
+              onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
+              className="ed-input"
+            />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, paddingTop: 8 }}>
+            <button
+              type="submit" disabled={sending}
+              style={{
+                fontFamily: SANS, fontSize: 13.5, fontWeight: 600,
+                background: t.btnBg, color: t.btnFg,
+                border: 'none', cursor: sending ? 'default' : 'pointer',
+                padding: '11px 26px', borderRadius: 999,
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                opacity: sending ? 0.55 : 1,
+                transition: 'background 0.3s, color 0.3s, opacity 0.15s',
+              }}
+              onMouseEnter={(e) => { if (!sending) e.currentTarget.style.opacity = '0.75'; }}
+              onMouseLeave={(e) => { if (!sending) e.currentTarget.style.opacity = '1'; }}
+            >
+              {sending && (
+                <svg style={{ width: 14, height: 14, animation: 'spin 0.7s linear infinite' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                </svg>
+              )}
+              {sending ? 'Sending…' : 'Send message'}
+            </button>
+
+            {msg && (
+              <p style={{ fontFamily: SANS, fontSize: 13, color: ok ? t.green : '#DC2626' }}>{msg}</p>
+            )}
+          </div>
+
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </form>
       </div>
     </section>
   );
