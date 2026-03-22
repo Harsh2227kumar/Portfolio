@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useReveal } from '../hooks/useReveal';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const LINKS = [
-  { label: 'Email',    value: 'harsh2227official@gmail.com',      href: 'mailto:harsh2227official@gmail.com' },
-  { label: 'LinkedIn', value: 'linkedin.com/in/harsh-2227-kumar',  href: 'https://www.linkedin.com/in/harsh-2227-kumar/' },
-  { label: 'GitHub',   value: 'github.com/harsh2227kumar',         href: 'https://github.com/harsh2227kumar' },
-  { label: 'Location', value: 'Nagpur, Maharashtra, India',        href: null },
+  { label: 'Email', value: 'harsh2227official@gmail.com', href: 'mailto:harsh2227official@gmail.com' },
+  { label: 'LinkedIn', value: 'linkedin.com/in/harsh-2227-kumar', href: 'https://www.linkedin.com/in/harsh-2227-kumar/' },
+  { label: 'GitHub', value: 'github.com/harsh2227kumar', href: 'https://github.com/harsh2227kumar' },
+  { label: 'Location', value: 'Nagpur, Maharashtra, India', href: null },
 ];
 
 const Contact = () => {
@@ -14,10 +14,10 @@ const Contact = () => {
   const ref = useReveal();
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sending, setSending] = useState(false);
-  const [msg, setMsg]   = useState('');
-  const [ok, setOk]     = useState(false);
+  const [msg, setMsg] = useState('');
+  const [ok, setOk] = useState(false);
 
-  const SANS  = "'Instrument Sans', system-ui, sans-serif";
+  const SANS = "'Instrument Sans', system-ui, sans-serif";
   const SERIF = "'Instrument Serif', Georgia, serif";
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +29,7 @@ const Contact = () => {
     fd.append('email', form.email);
     fd.append('message', form.message);
     try {
-      const res  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
       const data = await res.json();
       if (data.success) {
         setMsg("Message sent — I'll be in touch soon!"); setOk(true);
@@ -109,8 +109,8 @@ const Contact = () => {
           style={{ display: 'flex', flexDirection: 'column', gap: 20 }}
         >
           {[
-            { key: 'name',    label: 'Your name',     type: 'text',  placeholder: 'Harsh Kumar' },
-            { key: 'email',   label: 'Email address', type: 'email', placeholder: 'you@example.com' },
+            { key: 'name', label: 'Your name', type: 'text', placeholder: 'Harsh Kumar' },
+            { key: 'email', label: 'Email address', type: 'email', placeholder: 'you@example.com' },
           ].map((field) => (
             <div key={field.key} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: t.inkFaint, transition: 'color 0.3s' }}>

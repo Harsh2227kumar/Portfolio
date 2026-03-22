@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const Preloader = () => {
   const { t } = useTheme();
