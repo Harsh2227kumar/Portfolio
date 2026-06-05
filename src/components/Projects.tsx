@@ -123,9 +123,9 @@ const Projects = () => {
     <section
       id="projects"
       ref={ref as React.RefObject<HTMLElement>}
-      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(48px,7vw,80px) clamp(32px,5vw,72px)' }}
+      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px,3.5vw,40px) clamp(32px,5vw,72px)' }}
     >
-      <p className="reveal" style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
+      <p className="reveal" style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
         Projects
       </p>
 
@@ -143,12 +143,20 @@ const Projects = () => {
         >
           {/* Left: number + year */}
           <div style={{ paddingTop: 4 }}>
-            <p style={{ fontFamily: SERIF, fontSize: 13, fontStyle: 'italic', color: t.inkFaint, marginBottom: 6, transition: 'color 0.3s' }}>
+            <p style={{ fontFamily: SERIF, fontSize: 16, fontStyle: 'italic', fontWeight: 700, color: t.ink, marginBottom: 4, transition: 'color 0.3s' }}>
               {proj.num}
             </p>
-            <p style={{ fontFamily: SANS, fontSize: 11.5, color: t.inkFaint, letterSpacing: '0.04em', transition: 'color 0.3s' }}>
+            <p style={{ fontFamily: SANS, fontSize: 12, fontWeight: 700, color: t.inkFaint, letterSpacing: '0.04em', marginBottom: 16, transition: 'color 0.3s' }}>
               {proj.year}
             </p>
+            <a
+              href={proj.link} target="_blank" rel="noopener noreferrer"
+              style={{ fontFamily: SANS, fontSize: 12.5, fontWeight: 700, color: t.ink, borderBottom: `1px solid ${t.ink}`, paddingBottom: 1, display: 'inline-flex', alignItems: 'center', gap: 5, transition: 'color 0.3s, border-color 0.3s, opacity 0.15s' }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.5')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+            >
+              {proj.linkLabel} ↗
+            </a>
           </div>
 
           {/* Right: content */}
@@ -185,15 +193,6 @@ const Projects = () => {
                 </span>
               ))}
             </div>
-
-            <a
-              href={proj.link} target="_blank" rel="noopener noreferrer"
-              style={{ fontFamily: SANS, fontSize: 13, fontWeight: 600, color: t.ink, borderBottom: `1px solid ${t.ink}`, paddingBottom: 1, display: 'inline-flex', alignItems: 'center', gap: 5, transition: 'color 0.3s, border-color 0.3s, opacity 0.15s' }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.5')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-            >
-              {proj.linkLabel} ↗
-            </a>
           </div>
         </div>
       ))}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Github, Linkedin, Mail, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../Context/ThemeContext';
 
 /* ─── DATA ──────────────────────────────────────────── */
@@ -6,36 +7,21 @@ const NAV_ITEMS = [
   { label: 'About', href: '#about' },
   { label: 'Work', href: '#experience' },
   { label: 'Projects', href: '#projects' },
+  { label: 'Hackathons', href: '#hackathons' },
   { label: 'Skills', href: '#skills' },
+  { label: 'Badges & Certs', href: '#badges-certifications' },
   { label: 'Education', href: '#education' },
+  { label: 'Volunteer', href: '#volunteer' },
   { label: 'Contact', href: '#contact' },
 ];
 
 const EXT_LINKS = [
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/harsh-2227-kumar/' },
-  { label: 'GitHub', href: 'https://github.com/harsh2227kumar' },
-  { label: 'Email', href: 'mailto:harsh2227official@gmail.com' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/harsh-2227-kumar/', Icon: Linkedin },
+  { label: 'GitHub', href: 'https://github.com/harsh2227kumar', Icon: Github },
+  { label: 'Email', href: 'mailto:harsh2227official@gmail.com', Icon: Mail },
 ];
 
 /* ─── SVG ICONS ─────────────────────────────────────── */
-const SunIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="5" />
-    <line x1="12" y1="1" x2="12" y2="3" />   <line x1="12" y1="21" x2="12" y2="23" />
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-    <line x1="1" y1="12" x2="3" y2="12" />   <line x1="21" y1="12" x2="23" y2="12" />
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-  </svg>
-);
-const MoonIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-  </svg>
-);
 const MenuIcon = () => (
   <svg width="19" height="19" viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -91,6 +77,19 @@ const Navigation = () => {
   const sideBg = dark ? '#0C0C0B' : '#EFEFEC';
   const border = dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.07)';
   const S = "'Instrument Sans', system-ui, sans-serif";
+  const iconButtonStyle: React.CSSProperties = {
+    width: 32,
+    height: 32,
+    borderRadius: '50%',
+    border: `1px solid ${border}`,
+    background: 'transparent',
+    color: t.inkMid,
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background 0.2s, color 0.2s, border-color 0.3s',
+  };
 
   /* ── reusable sidebar body ── */
   const Body = () => (
@@ -210,58 +209,41 @@ const Navigation = () => {
         })}
       </nav>
 
-      {/* ── external links ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', marginTop: 28 }}>
-        {EXT_LINKS.map((link, i) => (
+      {/* ── social links + theme ── */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        marginTop: 28,
+        opacity: entered ? 1 : 0,
+        transition: 'opacity 0.45s ease 460ms',
+      }}>
+        {EXT_LINKS.map(({ Icon, ...link }) => (
           <a
             key={link.label}
             href={link.href}
             target={link.href.startsWith('http') ? '_blank' : undefined}
             rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-            style={{
-              fontFamily: S, fontSize: 11.5, fontWeight: 500,
-              color: t.inkFaint,
-              padding: '8px 0',
-              borderBottom: `1px solid ${border}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              transition: 'color 0.15s',
-              opacity: entered ? 1 : 0,
-              transitionDelay: `${i * 35 + 380}ms`,
+            aria-label={link.label}
+            title={link.label}
+            style={iconButtonStyle}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+              e.currentTarget.style.color = t.ink;
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = t.ink)}
-            onMouseLeave={e => (e.currentTarget.style.color = t.inkFaint)}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = t.inkMid;
+            }}
           >
-            {link.label}
-            <span style={{ fontSize: 9, opacity: 0.6 }}>↗</span>
+            <Icon size={15} strokeWidth={2} />
           </a>
         ))}
-      </div>
-
-      {/* ── theme toggle row ── */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        marginTop: 24,
-        opacity: entered ? 1 : 0,
-        transition: 'opacity 0.45s ease 540ms',
-      }}>
-        <span style={{
-          fontFamily: S, fontSize: 9, fontWeight: 600,
-          letterSpacing: '0.1em', textTransform: 'uppercase',
-          color: t.inkFaint, transition: 'color 0.3s',
-        }}>
-          {dark ? 'Dark mode' : 'Light mode'}
-        </span>
         <button
           onClick={toggle}
+          aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
           title={dark ? 'Switch to light' : 'Switch to dark'}
-          style={{
-            width: 32, height: 32, borderRadius: '50%',
-            border: `1px solid ${border}`,
-            background: 'transparent',
-            color: t.inkMid, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'background 0.2s, color 0.2s, border-color 0.3s',
-          }}
+          style={iconButtonStyle}
           onMouseEnter={e => {
             e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
             e.currentTarget.style.color = t.ink;
@@ -271,7 +253,7 @@ const Navigation = () => {
             e.currentTarget.style.color = t.inkMid;
           }}
         >
-          {dark ? <SunIcon /> : <MoonIcon />}
+          {dark ? <Sun size={15} strokeWidth={2} /> : <Moon size={15} strokeWidth={2} />}
         </button>
       </div>
     </div>
@@ -318,8 +300,8 @@ const Navigation = () => {
           HARSH KUMAR
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <button onClick={toggle} style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.inkMid, display: 'flex', alignItems: 'center', padding: 6 }}>
-            {dark ? <SunIcon /> : <MoonIcon />}
+          <button onClick={toggle} aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.inkMid, display: 'flex', alignItems: 'center', padding: 6 }}>
+            {dark ? <Sun size={15} strokeWidth={2} /> : <Moon size={15} strokeWidth={2} />}
           </button>
           <button onClick={() => setMobileOpen(v => !v)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.ink, display: 'flex', alignItems: 'center', padding: 6 }}>
             {mobileOpen ? <CloseIcon /> : <MenuIcon />}

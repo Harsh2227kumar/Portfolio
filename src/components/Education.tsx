@@ -14,39 +14,6 @@ const EDUCATION = [
   },
 ];
 
-const CERTS = [
-  {
-    issuer: 'Elevate Labs',
-    name:   'DevOps Internship Certificate',
-    year:   '2025',
-    url:    'https://drive.google.com/file/d/1BFEDKfKpIcAuKLDPLUpSy38N98qz0E3G/view?usp=sharing',
-  },
-  {
-    issuer: 'Red Hat',
-    name:   'Certified Specialist in Python Programming (AD141 – RHA)',
-    year:   '2024',
-    url:    'https://drive.google.com/file/d/1E5bomX4mh-Mu2i6g1nLGLLzjUeThLvf5/view?usp=sharing',
-  },
-  {
-    issuer: 'Various',
-    name:   'Data Structures and Algorithms using Python',
-    year:   '2024',
-    url:    'https://drive.google.com/file/d/1N3743EI2kjaGNkTPrFVpL2qcUTMWsHIw/view?usp=sharing',
-  },
-  {
-    issuer: 'Cisco',
-    name:   'Networking Basics',
-    year:   '2024',
-    url:    'https://drive.google.com/file/d/1IwkEBHZZMXX3ckIWnE-fu4qhknYnhKgC/view?usp=sharing',
-  },
-  {
-    issuer: 'HackerRank',
-    name:   'SQL (Intermediate)',
-    year:   '2024',
-    url:    'https://drive.google.com/file/d/1c5PKrI2ozjyXnl_1QlHOP7JP_9Qn33y_/view?usp=sharing',
-  },
-];
-
 const VOLUNTEERING = [
   { role: 'Organiser', org: 'SITNovate 1.0 (24-hr Hackathon) | Enthusia 4.0', inst: 'Symbiosis Institute of Technology' },
   { role: 'Organiser & Sponsorship', org: 'Enthusia 5.0 (College Cultural & Technical Fest)', inst: 'Symbiosis Institute of Technology' },
@@ -57,18 +24,20 @@ const VOLUNTEERING = [
 const Education = () => {
   const { t } = useTheme();
   const ref   = useReveal();
+  const volunteerRef = useReveal();
 
   const SANS  = "'Instrument Sans', system-ui, sans-serif";
   const SERIF = "'Instrument Serif', Georgia, serif";
 
   return (
+    <>
     <section
       id="education"
       ref={ref as React.RefObject<HTMLElement>}
-      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(48px,7vw,80px) clamp(32px,5vw,72px)' }}
+      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px,3.5vw,40px) clamp(32px,5vw,72px)' }}
     >
       {/* ── Education ── */}
-      <p className="reveal" style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
+      <p className="reveal" style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
         Education
       </p>
 
@@ -121,54 +90,15 @@ const Education = () => {
         </div>
       ))}
       <hr style={{ border: 'none', borderTop: `1px solid ${t.rule}`, transition: 'border-color 0.3s' }} />
-
-      {/* ── Certifications ── */}
-      <div style={{ marginTop: 52 }}>
-        <p className="reveal" style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 28, transition: 'color 0.3s' }}>
-          Certifications
-        </p>
-
-        <div className="cert-grid reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
-          {CERTS.map((cert, i) => {
-            const col     = i % 3;
-            const row     = Math.floor(i / 3);
-            const lastRow = Math.floor((CERTS.length - 1) / 3);
-            return (
-              <div key={i} style={{
-                padding: '24px 20px',
-                borderLeft:   col === 0 ? 'none' : `1px solid ${t.rule}`,
-                borderBottom: row === lastRow ? 'none' : `1px solid ${t.rule}`,
-                paddingLeft:  col === 0 ? 0 : 20,
-                transition:   'border-color 0.3s',
-              }}>
-                <p style={{ fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 7, transition: 'color 0.3s' }}>
-                  {cert.issuer}
-                </p>
-                <p style={{ fontFamily: SANS, fontSize: 13.5, fontWeight: 500, color: t.ink, lineHeight: 1.4, marginBottom: 5, transition: 'color 0.3s' }}>
-                  {cert.name}
-                </p>
-                <p style={{ fontFamily: SANS, fontSize: 11.5, color: t.inkFaint, marginBottom: 13, transition: 'color 0.3s' }}>
-                  {cert.year}
-                </p>
-                <a
-                  href={cert.url} target="_blank" rel="noopener noreferrer"
-                  style={{ fontFamily: SANS, fontSize: 12, fontWeight: 600, color: t.ink, borderBottom: `1px solid ${t.ink}`, display: 'inline-flex', alignItems: 'center', gap: 4, transition: 'opacity 0.15s, color 0.3s, border-color 0.3s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.5')}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-                >
-                  View ↗
-                </a>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <hr style={{ border: 'none', borderTop: `1px solid ${t.rule}`, marginTop: 48, transition: 'border-color 0.3s' }} />
+    </section>
 
       {/* ── Volunteering & Leadership ── */}
-      <div style={{ marginTop: 52 }}>
-        <p className="reveal" style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
+    <section
+      id="volunteer"
+      ref={volunteerRef as React.RefObject<HTMLElement>}
+      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px,3.5vw,40px) clamp(32px,5vw,72px)' }}
+    >
+        <p className="reveal" style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
           Volunteering &amp; Leadership
         </p>
 
@@ -202,8 +132,8 @@ const Education = () => {
           </div>
         ))}
         <hr style={{ border: 'none', borderTop: `1px solid ${t.rule}`, transition: 'border-color 0.3s' }} />
-      </div>
     </section>
+    </>
   );
 };
 

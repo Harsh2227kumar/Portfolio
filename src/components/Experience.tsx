@@ -40,19 +40,6 @@ const EXPERIENCES: ExpItem[] = [
     ],
     tags: ['Docker', 'Terraform', 'Jenkins', 'GCP', 'DigitalOcean', 'Flask', 'Bash', 'CI/CD'],
   },
-  {
-    company: 'SITNovate 1.0 / Enthusia',
-    period:  '2025 – Present',
-    type:    'Volunteer',
-    title:   'Hackathon Organiser & Campus Ambassador',
-    body:    'Organised and led multiple large-scale college events, drove campus-wide participation in national hackathons and coding competitions.',
-    bullets: [
-      'Organiser — SITNovate 1.0 (24-hr Hackathon) and Enthusia 4.0/5.0, Symbiosis Institute of Technology',
-      'Lead, Hacker\'s Experience Team & Web Developer — Hack4Brahma & Hack4Maha Hackathons',
-      'Campus Ambassador — Unstop (Present): promoting hackathons and tech competitions across campus',
-    ],
-    tags: ['Event Management', 'React.js', 'Tailwind CSS', 'Community Building', 'Sponsorship'],
-  },
 ];
 
 const Experience = () => {
@@ -66,11 +53,9 @@ const Experience = () => {
     <section
       id="experience"
       ref={ref as React.RefObject<HTMLElement>}
-      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(48px,7vw,80px) clamp(32px,5vw,72px)' }}
+      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px,3.5vw,40px) clamp(32px,5vw,72px)' }}
     >
-      <hr style={{ border: 'none', borderTop: `1px solid ${t.rule}`, marginBottom: 'clamp(48px,7vw,80px)', transition: 'border-color 0.3s' }} />
-
-      <p className="reveal" style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
+      <p className="reveal" style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
         Experience
       </p>
 

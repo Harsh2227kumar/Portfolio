@@ -313,7 +313,7 @@ const Skills: React.FC = () => {
     <section
       id="skills"
       ref={sectionRef}
-      style={{ maxWidth: 900, margin: '0 auto', padding: 'clamp(48px,7vw,80px) clamp(32px,5vw,72px)' }}
+      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px,3.5vw,40px) clamp(32px,5vw,72px)' }}
     >
       {/* ── Header ── */}
       <div style={{
@@ -322,7 +322,7 @@ const Skills: React.FC = () => {
       }}>
         <div>
           <p style={{
-            fontFamily: SANS, fontSize: 11, fontWeight: 600,
+            fontFamily: SANS, fontSize: 13, fontWeight: 800,
             letterSpacing: '0.12em', textTransform: 'uppercase',
             color: t.inkFaint, marginBottom: 10,
             opacity: visible ? 1 : 0,

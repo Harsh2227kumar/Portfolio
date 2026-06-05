@@ -47,11 +47,9 @@ const Contact = () => {
     <section
       id="contact"
       ref={ref as React.RefObject<HTMLElement>}
-      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(56px,8vw,96px) clamp(20px,5vw,60px) clamp(80px,12vw,140px)' }}
+      style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px,3.5vw,40px) clamp(20px,5vw,60px)' }}
     >
-      <hr style={{ border: 'none', borderTop: `1px solid ${t.rule}`, marginBottom: 'clamp(56px,8vw,96px)', transition: 'border-color 0.3s' }} />
-
-      <p className="reveal" style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 44, transition: 'color 0.3s' }}>
+      <p className="reveal" style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 44, transition: 'color 0.3s' }}>
         Contact
       </p>
 

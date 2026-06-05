@@ -134,9 +134,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 720px) {
   .about-2col   { grid-template-columns: 1fr !important; }
   .contact-grid { grid-template-columns: 1fr !important; }
+  .courses-proof-grid { grid-template-columns: 1fr !important; }
 }
 @media (max-width: 620px) {
-  .exp-row, .proj-row, .edu-row { grid-template-columns: 1fr !important; gap: 10px !important; }
+  .exp-row, .proj-row, .hack-row, .edu-row { grid-template-columns: 1fr !important; gap: 10px !important; }
 }
 @media (max-width: 900px) {
   .skills-grid { grid-template-columns: 1fr 1fr !important; }
@@ -146,7 +147,11 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 @media (max-width: 720px) {
   .cert-grid { grid-template-columns: 1fr 1fr !important; }
+  .badge-cert-grid { grid-template-columns: 1fr 1fr !important; }
+  .proof-row-grid { grid-template-columns: 1fr 1fr !important; }
 }
 @media (max-width: 440px) {
   .cert-grid { grid-template-columns: 1fr !important; }
+  .badge-cert-grid { grid-template-columns: 1fr !important; }
+  .proof-row-grid { grid-template-columns: 1fr !important; }
 }

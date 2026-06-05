@@ -26,11 +26,11 @@ const About = () => {
       style={{
         maxWidth: 1100,
         margin: '0 auto',
-        padding: 'clamp(48px,7vw,80px) clamp(32px,5vw,72px)'
+        padding: 'clamp(24px,3.5vw,40px) clamp(32px,5vw,72px)'
       }}
     >
       <p className="reveal" style={{
-        fontFamily: SANS, fontSize: 11, fontWeight: 600,
+        fontFamily: SANS, fontSize: 13, fontWeight: 800,
         letterSpacing: '0.12em', textTransform: 'uppercase',
         color: t.inkFaint, marginBottom: 44, transition: 'color 0.3s',
       }}>
@@ -100,6 +100,8 @@ const About = () => {
           ))}
         </div>
       </div>
+
+      <hr style={{ border: 'none', borderTop: `1px solid ${t.rule}`, marginTop: 'clamp(24px,3.5vw,40px)', transition: 'border-color 0.3s' }} />
     </section>
   );
 };
