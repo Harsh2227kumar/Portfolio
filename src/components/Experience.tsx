@@ -58,6 +58,9 @@ const Experience = () => {
       <p className="reveal" style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
         Experience
       </p>
+      <h2 className="reveal reveal-d1" style={{ fontFamily: SERIF, fontSize: 'clamp(26px,3.6vw,42px)', lineHeight: 1.1, letterSpacing: '-0.022em', color: t.ink, marginBottom: 18, transition: 'color 0.3s' }}>
+        Shipping through <em style={{ fontStyle: 'italic', color: t.inkFaint, transition: 'color 0.3s' }}>real-world sprints</em>
+      </h2>
 
       {EXPERIENCES.map((exp, i) => (
         <div

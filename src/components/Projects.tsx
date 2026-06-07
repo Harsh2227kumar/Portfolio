@@ -33,22 +33,6 @@ const PROJECTS: Project[] = [
   },
   {
     num:      '02',
-    title:    'MemoryLens',
-    subtitle: 'AI-Powered Multimodal Search Assistant',
-    year:     '2026',
-    body:     'Production-deployed AI search assistant combining semantic document retrieval (FAISS + AWS Titan embeddings) and face-based photo search via AWS Rekognition.',
-    highlights: [
-      'Semantic document retrieval using FAISS + AWS Titan embeddings',
-      'Face-based photo search via AWS Rekognition',
-      'Multi-format indexing pipeline — PDF, DOCX, PPTX, XLSX, images — with background processing',
-      'Real-time progress tracking and unified React UI with ranked results and direct file access',
-    ],
-    tags:      ['React', 'FastAPI', 'FAISS', 'AWS Rekognition', 'AWS Bedrock', 'Textract', 'Python'],
-    link:      'https://github.com/harsh2227kumar',
-    linkLabel: 'View on GitHub',
-  },
-  {
-    num:      '03',
     title:    'Smart Resume Builder',
     subtitle: 'Full-Stack MERN + Next.js · AI-Powered',
     year:     '2025',
@@ -63,7 +47,7 @@ const PROJECTS: Project[] = [
     linkLabel: 'View on GitHub',
   },
   {
-    num:      '04',
+    num:      '03',
     title:    'Zen Chat',
     subtitle: 'Real-Time Messaging App · React + Socket.IO',
     year:     '2025',
@@ -79,7 +63,7 @@ const PROJECTS: Project[] = [
     linkLabel: 'View on GitHub',
   },
   {
-    num:      '05',
+    num:      '04',
     title:    'College FAQ Chatbot',
     subtitle: 'Production NLP Chatbot · FastAPI + Docker',
     year:     '2026',
@@ -95,7 +79,7 @@ const PROJECTS: Project[] = [
     linkLabel: 'View on GitHub',
   },
   {
-    num:      '06',
+    num:      '05',
     title:    'Incident Management System',
     subtitle: 'Flask · Docker · JWT · REST API',
     year:     '2025',
@@ -128,6 +112,9 @@ const Projects = () => {
       <p className="reveal" style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
         Projects
       </p>
+      <h2 className="reveal reveal-d1" style={{ fontFamily: SERIF, fontSize: 'clamp(26px,3.6vw,42px)', lineHeight: 1.1, letterSpacing: '-0.022em', color: t.ink, marginBottom: 18, transition: 'color 0.3s' }}>
+        Products shaped from <em style={{ fontStyle: 'italic', color: t.inkFaint, transition: 'color 0.3s' }}>practical builds</em>
+      </h2>
 
       {PROJECTS.map((proj, i) => (
         <div

@@ -13,6 +13,7 @@ interface HackathonProject {
 
 interface Hackathon {
   event: string;
+  eventUrl: string;
   year: string;
   role: string;
   location: string;
@@ -23,71 +24,77 @@ interface Hackathon {
 
 const HACKATHONS: Hackathon[] = [
   {
-    event: 'CodeSprint Hackathon',
-    year: '2025',
-    role: 'Participant',
-    location: 'Online',
-    status: '36-hr Build',
+    event: 'AI for Bharat Hackathon',
+    eventUrl: 'https://hack2skill.com/event/ai-for-bharat',
+    year: '2026',
+    role: 'Selected Participant',
+    location: 'Online · India',
+    status: '24-hr Hackathon',
     summary:
-      'Built a full-stack project with a small team during a time-boxed hackathon sprint, focusing on rapid prototyping, clean user flow, and a working MVP.',
+      'Presented the solution idea, got selected for the build phase, and built an AI-powered multimodal retrieval project for the national AI for Bharat program supported by AWS.',
     projects: [
       {
-        name: 'SkillSwap',
+        name: 'MemoryLens',
         description:
-          'A peer-to-peer skill exchange platform where students can list skills, match with other learners, and schedule collaborative learning sessions.',
+          'An AI-powered multimodal search assistant that combines semantic document retrieval with face-based photo search, helping users find memories, files, and people across mixed media.',
         highlights: [
-          'Built authentication, profile creation, and skill listing flows',
-          'Implemented match discovery with filters for skill category and availability',
-          'Created a responsive dashboard for requests, accepted matches, and session status',
+          'Built semantic document retrieval using FAISS and AWS Titan embeddings',
+          'Added face-based photo search using AWS Rekognition',
+          'Created a multi-format indexing pipeline for PDFs, DOCX, PPTX, XLSX, and images',
+          'Designed a unified React interface with ranked results, progress tracking, and direct file access',
         ],
-        tech: ['React', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS'],
+        tech: ['React', 'FastAPI', 'Python', 'FAISS', 'AWS Bedrock', 'AWS Rekognition', 'AWS Textract'],
         github: 'https://github.com/harsh2227kumar',
       },
     ],
   },
   {
-    event: 'InnovateX Hackathon',
-    year: '2025',
-    role: 'Participant',
-    location: 'Campus Hackathon',
-    status: '24-hr Build',
+    event: 'iDEA 2.0 Hackathon',
+    eventUrl: 'https://www.ideahackathon.com/',
+    year: '2026',
+    role: 'Selected Participant',
+    location: 'Union Bank of India · FinTech Hackathon',
+    status: '24-hr Hackathon',
     summary:
-      'Participated in a campus hackathon and built an AI-assisted web app prototype aimed at solving a practical student productivity problem.',
+      'Presented the idea and built a banking-focused complaint intelligence platform during iDEA 2.0, a national innovation challenge presented by Union Bank of India.',
     projects: [
       {
-        name: 'StudyMate AI',
+        name: 'CustomerPulse',
         description:
-          'An AI study assistant that lets students upload notes, generate summaries, create quizzes, and track revision topics from one interface.',
+          'A GenAI-powered customer complaint intelligence dashboard for banking teams, focused on complaint processing, sentiment, urgency, churn risk, human-review routing, and SLA visibility.',
         highlights: [
-          'Designed note upload and summary generation workflow',
-          'Added quiz generation from extracted study material',
-          'Built a clean React interface for subjects, summaries, and revision history',
+          'Built a React/Vite dashboard connected to a FastAPI backend and PostgreSQL storage',
+          'Used AWS Bedrock enrichment, pgvector RAG, and persisted batch jobs for complaint intelligence',
+          'Implemented real complaint search, intake, processing progress, analytics, duplicate detection, exports, and SLA reporting',
+          'Designed operational views for support agents, managers, and demo judges with real backend-driven data',
         ],
-        tech: ['React', 'FastAPI', 'Python', 'Gemini API', 'Tailwind CSS'],
-        github: 'https://github.com/harsh2227kumar',
+        tech: ['React', 'Vite', 'FastAPI', 'PostgreSQL', 'pgvector', 'AWS Bedrock', 'S3', 'Docker'],
+        github: 'https://github.com/Harsh2227kumar/CustomerPulse',
       },
     ],
   },
   {
-    event: 'BuildForGood Hackathon',
-    year: '2024',
-    role: 'Participant',
-    location: 'Online',
-    status: '48-hr Build',
+    event: 'Sankalp Bharat Hackathon 2K26',
+    eventUrl: 'https://sankalpbharat.stvincentngp.edu.in/problem-statements',
+    year: '2026',
+    role: 'Selected Participant',
+    location: 'St. Vincent Pallotti College of Engineering & Technology, Nagpur',
+    status: '24-hr Hackathon',
     summary:
-      'Worked on a social-impact hackathon project, turning the idea into a working prototype with user-facing screens and backend APIs.',
+      'Built CarbonLens for Sankalp Bharat, a hackathon organized by St. Vincent Pallotti College of Engineering & Technology, Nagpur, around the ESG performance and GHG monitoring problem statement.',
     projects: [
       {
-        name: 'MedAlert',
+        name: 'CarbonLens',
         description:
-          'A medication reminder and emergency contact web app for patients, with schedule tracking, alerts, and a simple caregiver view.',
+          'A smart ESG control tower that centralizes emissions data, calculates Scope 1 and Scope 2 footprints, supports limited Scope 3 supplier inputs, and turns scattered reporting into accountable workflows.',
         highlights: [
-          'Created medicine schedule CRUD flows with reminder status tracking',
-          'Built emergency contact cards and caregiver-friendly patient overview',
-          'Implemented backend APIs for schedules, users, and alert history',
+          'Built activity data upload, manual entry, governance dashboards, and supplier submission workflows',
+          'Implemented deterministic emissions calculations with issue tracking and audit-ready summaries',
+          'Created role-based flows for sustainability managers, operations teams, suppliers, and leadership reviewers',
+          'We were stuck near the end because we could not find proper datasets to continue further.',
         ],
-        tech: ['React', 'Flask', 'SQLite', 'JWT', 'Bootstrap'],
-        github: 'https://github.com/harsh2227kumar',
+        tech: ['React', 'Vite', 'TypeScript', 'Tailwind CSS', 'Express', 'Prisma', 'SQLite', 'Recharts'],
+        github: 'https://github.com/Abhinav0912007/Sankalp_Bharat',
       },
     ],
   },
@@ -161,8 +168,17 @@ const Hackathons = () => {
           </div>
 
           <div>
-            <h3 style={{ fontFamily: SERIF, fontSize: 'clamp(20px,2.5vw,30px)', lineHeight: 1.18, letterSpacing: '-0.015em', color: t.ink, marginBottom: 5, transition: 'color 0.3s' }}>
-              {hack.event}
+            <h3 style={{ fontFamily: SERIF, fontSize: 'clamp(20px,2.5vw,30px)', lineHeight: 1.18, letterSpacing: '-0.015em', marginBottom: 5 }}>
+              <a
+                href={hack.eventUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: t.ink, borderBottom: `1px solid ${t.rule}`, transition: 'color 0.3s, border-color 0.3s, opacity 0.15s' }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.55')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+              >
+                {hack.event} ↗
+              </a>
             </h3>
             <p style={{ fontFamily: SANS, fontSize: 12.5, color: t.inkFaint, fontWeight: 500, marginBottom: 14, transition: 'color 0.3s' }}>
               {hack.location}

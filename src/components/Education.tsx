@@ -40,6 +40,9 @@ const Education = () => {
       <p className="reveal" style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
         Education
       </p>
+      <h2 className="reveal reveal-d1" style={{ fontFamily: SERIF, fontSize: 'clamp(26px,3.6vw,42px)', lineHeight: 1.1, letterSpacing: '-0.022em', color: t.ink, marginBottom: 18, transition: 'color 0.3s' }}>
+        Learning the systems behind <em style={{ fontStyle: 'italic', color: t.inkFaint, transition: 'color 0.3s' }}>software engineering</em>
+      </h2>
 
       {EDUCATION.map((edu, i) => (
         <div
@@ -101,6 +104,9 @@ const Education = () => {
         <p className="reveal" style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 4, transition: 'color 0.3s' }}>
           Volunteering &amp; Leadership
         </p>
+        <h2 className="reveal reveal-d1" style={{ fontFamily: SERIF, fontSize: 'clamp(26px,3.6vw,42px)', lineHeight: 1.1, letterSpacing: '-0.022em', color: t.ink, marginBottom: 18, transition: 'color 0.3s' }}>
+          Leading from <em style={{ fontStyle: 'italic', color: t.inkFaint, transition: 'color 0.3s' }}>campus to community</em>
+        </h2>
 
         {VOLUNTEERING.map((v, i) => (
           <div
