@@ -130,7 +130,10 @@ const Hackathons = () => {
         A running list of hackathons I have participated in, along with the projects I built, technical choices, key features, and repository links from each build.
       </p>
 
-      {HACKATHONS.map((hack, i) => (
+      {HACKATHONS.map((hack, i) => {
+        const firstProject = hack.projects[0];
+
+        return (
         <div
           key={hack.event}
           className={`hack-row reveal${i > 0 ? ` reveal-d${Math.min(i, 3) as 1|2|3}` : ''}`}
@@ -165,6 +168,32 @@ const Hackathons = () => {
             }}>
               {hack.status}
             </span>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 10, marginTop: 16 }}>
+              {firstProject?.github && (
+                <a
+                  href={firstProject.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontFamily: SANS, fontSize: 12.5, fontWeight: 700, color: t.ink, borderBottom: `1px solid ${t.ink}`, paddingBottom: 1, display: 'inline-flex', alignItems: 'center', gap: 5, transition: 'opacity 0.15s, color 0.3s, border-color 0.3s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.5')}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                >
+                  GitHub ↗
+                </a>
+              )}
+              {firstProject?.demo && (
+                <a
+                  href={firstProject.demo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontFamily: SANS, fontSize: 12.5, fontWeight: 700, color: t.ink, borderBottom: `1px solid ${t.ink}`, paddingBottom: 1, display: 'inline-flex', alignItems: 'center', gap: 5, transition: 'opacity 0.15s, color 0.3s, border-color 0.3s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.5')}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                >
+                  Demo ↗
+                </a>
+              )}
+            </div>
           </div>
 
           <div>
@@ -193,32 +222,6 @@ const Hackathons = () => {
                   <h4 style={{ fontFamily: SANS, fontSize: 15, fontWeight: 700, color: t.ink, transition: 'color 0.3s' }}>
                     {project.name}
                   </h4>
-                  <div style={{ display: 'flex', gap: 14 }}>
-                    {project.github && (
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: t.ink, borderBottom: `1px solid ${t.ink}`, paddingBottom: 1, transition: 'opacity 0.15s, color 0.3s, border-color 0.3s' }}
-                        onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.5')}
-                        onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-                      >
-                        GitHub ↗
-                      </a>
-                    )}
-                    {project.demo && (
-                      <a
-                        href={project.demo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: t.ink, borderBottom: `1px solid ${t.ink}`, paddingBottom: 1, transition: 'opacity 0.15s, color 0.3s, border-color 0.3s' }}
-                        onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.5')}
-                        onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-                      >
-                        Demo ↗
-                      </a>
-                    )}
-                  </div>
                 </div>
 
                 <p style={{ fontFamily: SANS, fontSize: 13.5, color: t.inkMid, lineHeight: 1.68, marginBottom: 12, transition: 'color 0.3s' }}>
@@ -253,7 +256,8 @@ const Hackathons = () => {
             ))}
           </div>
         </div>
-      ))}
+        );
+      })}
 
       <hr style={{ border: 'none', borderTop: `1px solid ${t.rule}`, transition: 'border-color 0.3s' }} />
     </section>
