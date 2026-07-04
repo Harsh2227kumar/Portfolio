@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useMemo, useState } from 'react';
+import React, { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -81,6 +81,17 @@ const numberFormat = new Intl.NumberFormat('en-IN');
 const SANS = "'Instrument Sans', system-ui, sans-serif";
 const SERIF = "'Instrument Serif', Georgia, serif";
 
+const dateRanges = [
+  { value: '24h', label: '24h' },
+  { value: '7d', label: '7 days' },
+  { value: '30d', label: '30 days' },
+  { value: '2m', label: '2 months' },
+  { value: '6m', label: '6 months' },
+  { value: '1y', label: '1 year' },
+] as const;
+
+type DateRange = (typeof dateRanges)[number]['value'];
+
 const defaultInsights: Insights = {
   summary: { users: 0, newUsers: 0, sessions: 0, pageViews: 0, campaignSessions: 0, campaignViews: 0 },
   daily: [],
@@ -92,20 +103,20 @@ const defaultInsights: Insights = {
 
 const utmOptions = {
   source: [
-    { value: 'linkedin', label: 'LinkedIn', description: 'Use when the link is posted on LinkedIn profiles, posts, or messages.' },
-    { value: 'behance', label: 'Behance', description: 'Use for Behance project pages or profile placements.' },
-    { value: 'github', label: 'GitHub', description: 'Use for README links, repo profiles, or project documentation.' },
-    { value: 'resume', label: 'Resume', description: 'Use when the link is inside a resume PDF or shared CV.' },
+    { value: 'linkedin', label: 'LinkedIn' },
+    { value: 'behance', label: 'Behance' },
+    { value: 'github', label: 'GitHub' },
+    { value: 'resume', label: 'Resume' },
   ],
   medium: [
-    { value: 'social', label: 'Social', description: 'Use for social network traffic.' },
-    { value: 'portfolio', label: 'Portfolio', description: 'Use for links placed inside portfolio/project pages.' },
-    { value: 'pdf', label: 'PDF', description: 'Use for links inside downloadable documents.' },
+    { value: 'social', label: 'Social' },
+    { value: 'portfolio', label: 'Portfolio' },
+    { value: 'pdf', label: 'PDF' },
   ],
   content: [
-    { value: 'bio-link', label: 'Bio link', description: 'Use for profile bio links.' },
-    { value: 'featured-project', label: 'Featured project', description: 'Use for a specific highlighted project placement.' },
-    { value: 'footer', label: 'Footer', description: 'Use for footer or repeated low-priority placements.' },
+    { value: 'bio-link', label: 'Bio link' },
+    { value: 'featured-project', label: 'Featured project' },
+    { value: 'footer', label: 'Footer' },
   ],
 };
 
@@ -121,6 +132,7 @@ const Dashboard = () => {
   const [loadingData, setLoadingData] = useState(false);
   const [insights, setInsights] = useState<Insights>(defaultInsights);
   const [activeTab, setActiveTab] = useState<Tab>('analytics');
+  const [dateRange, setDateRange] = useState<DateRange>('30d');
   const [copied, setCopied] = useState(false);
   const [campaign, setCampaign] = useState({
     path: '/',
@@ -136,10 +148,10 @@ const Dashboard = () => {
   const cardBg = dark ? 'rgba(255,255,255,0.035)' : 'rgba(0,0,0,0.025)';
   const grid = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
 
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async (range: DateRange = '30d') => {
     setLoadingData(true);
     try {
-      const res = await fetch('/api/dash/insights', { credentials: 'include' });
+      const res = await fetch(`/api/dash/insights?range=${range}`, { credentials: 'include' });
       if (res.status === 401) {
         setAuthenticated(false);
         return;
@@ -150,7 +162,7 @@ const Dashboard = () => {
     } finally {
       setLoadingData(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -166,7 +178,7 @@ const Dashboard = () => {
     };
 
     checkAuth();
-  }, []);
+  }, [loadDashboard]);
 
   const generatedUrl = useMemo(() => {
     const origin = typeof window === 'undefined' ? 'https://your-domain.com' : window.location.origin;
@@ -178,10 +190,8 @@ const Dashboard = () => {
     return url.toString();
   }, [campaign]);
 
-  const sourceDonut = useMemo(() => {
-    const rows = insights.utm.sources.length ? insights.utm.sources : [{ name: 'No data', views: 1 }];
-    return rows.map((row) => ({ name: row.name, value: Number(row.views || 0) || 1 }));
-  }, [insights.utm.sources]);
+  const sourceDonut = useMemo(() => insights.utm.sources.map((row) => ({ name: row.name, value: Number(row.views || 0) })), [insights.utm.sources]);
+  const hasUtmSourceData = sourceDonut.some((row) => row.value > 0);
 
   const metricCards = [
     { label: 'Users', value: insights.summary.users, Icon: Users },
@@ -260,7 +270,7 @@ const Dashboard = () => {
             <h1 style={{ fontFamily: SERIF, fontSize: 'clamp(40px,7vw,74px)', lineHeight: 0.9, color: t.ink }}>Insights</h1>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button onClick={loadDashboard} style={smallButton(t.btnBg, t.btnFg)} disabled={loadingData}><RefreshCcw size={15} />{loadingData ? 'Refreshing' : 'Refresh'}</button>
+            <button onClick={() => loadDashboard(dateRange)} style={smallButton(t.btnBg, t.btnFg)} disabled={loadingData}><RefreshCcw size={15} />{loadingData ? 'Refreshing' : 'Refresh'}</button>
             <button onClick={logout} style={smallButton('transparent', t.inkMid, t.rule)}><LogOut size={15} />Logout</button>
           </div>
         </header>
@@ -283,11 +293,26 @@ const Dashboard = () => {
             </section>
 
             <section className="dash-main-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.45fr) minmax(280px, 0.85fr)', gap: 14, marginBottom: 14 }}>
-              <ChartPanel title="Date Wise Views" icon={<CalendarDays size={17} />} rule={t.rule} bg={cardBg} ink={t.ink}>
+              <ChartPanel
+                title="Date Wise Views"
+                icon={<CalendarDays size={17} />}
+                rule={t.rule}
+                bg={cardBg}
+                ink={t.ink}
+                action={
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                    {dateRanges.map((range) => (
+                      <button key={range.value} onClick={() => { setDateRange(range.value); void loadDashboard(range.value); }} style={rangeButton(dateRange === range.value, accent, t.btnFg, t.inkMid, t.rule)}>
+                        {range.label}
+                      </button>
+                    ))}
+                  </div>
+                }
+              >
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={insights.daily} margin={{ top: 10, right: 12, left: -12, bottom: 0 }}>
                     <CartesianGrid stroke={grid} vertical={false} />
-                    <XAxis dataKey="date" tick={{ fill: t.inkFaint, fontSize: 11 }} />
+                    <XAxis dataKey="date" tick={{ fill: t.inkFaint, fontSize: 11 }} interval="preserveStartEnd" minTickGap={18} />
                     <YAxis tick={{ fill: t.inkFaint, fontSize: 11 }} />
                     <Tooltip contentStyle={tooltip(t.bg, t.rule, t.ink)} />
                     <Line type="monotone" dataKey="views" stroke={accent} strokeWidth={3} dot={false} />
@@ -297,14 +322,18 @@ const Dashboard = () => {
               </ChartPanel>
 
               <ChartPanel title="UTM Source Mix" icon={<Megaphone size={17} />} rule={t.rule} bg={cardBg} ink={t.ink}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={sourceDonut} dataKey="value" nameKey="name" innerRadius={56} outerRadius={88} paddingAngle={4}>
-                      {sourceDonut.map((entry, index) => <Cell key={entry.name} fill={[accent, accentTwo, '#6366F1', '#10B981', '#EF4444', '#8B5CF6'][index % 6]} />)}
-                    </Pie>
-                    <Tooltip contentStyle={tooltip(t.bg, t.rule, t.ink)} />
-                  </PieChart>
-                </ResponsiveContainer>
+                {hasUtmSourceData ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+                      <Pie data={sourceDonut} dataKey="value" nameKey="name" innerRadius={58} outerRadius={82} paddingAngle={sourceDonut.length > 1 ? 3 : 0} stroke={t.bg} strokeWidth={2}>
+                        {sourceDonut.map((entry, index) => <Cell key={entry.name} fill={[accent, accentTwo, '#6366F1', '#10B981', '#EF4444', '#8B5CF6'][index % 6]} />)}
+                      </Pie>
+                      <Tooltip contentStyle={tooltip(t.bg, t.rule, t.ink)} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <EmptyState title="No UTM source traffic yet" text="Create and share a campaign link to fill this chart." muted={t.inkMid} />
+                )}
               </ChartPanel>
             </section>
 
@@ -342,16 +371,22 @@ const Dashboard = () => {
             </section>
           </>
         ) : (
-          <section className="campaign-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 0.85fr) minmax(0, 1.15fr)', gap: 14 }}>
+          <section className="campaign-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 0.9fr) minmax(0, 1.1fr)', gap: 14 }}>
             <article style={panel(t.rule, cardBg, 22)}>
               <h2 style={sectionTitle(t.ink)}><Link size={18} />Create UTM Link</h2>
-              <label style={labelStyle(t.inkMid)}>Destination path</label>
-              <input value={campaign.path} onChange={(event) => updateCampaign('path', event.target.value)} placeholder="/ or /#projects" style={inputStyle(t.inputBorder, t.ink)} />
-              {(['source', 'medium', 'content'] as UtmKey[]).map((key) => (
-                <UtmField key={key} name={key} value={campaign[key]} onChange={(value) => updateCampaign(key, value)} ink={t.ink} muted={t.inkMid} border={t.inputBorder} />
-              ))}
-              <label style={labelStyle(t.inkMid)}>Description / context</label>
-              <textarea value={campaign.note} onChange={(event) => updateCampaign('note', event.target.value)} placeholder="Internal note only, not added to the URL" rows={3} style={{ ...inputStyle(t.inputBorder, t.ink), resize: 'vertical' }} />
+              <div style={{ display: 'grid', gap: 14 }}>
+                <div>
+                  <label style={labelStyle(t.inkMid)}>Destination path</label>
+                  <input value={campaign.path} onChange={(event) => updateCampaign('path', event.target.value)} placeholder="/ or /#projects" style={{ ...inputStyle(t.inputBorder, t.ink), marginBottom: 0 }} />
+                </div>
+                {(['source', 'medium', 'content'] as UtmKey[]).map((key) => (
+                  <UtmField key={key} name={key} value={campaign[key]} onChange={(value) => updateCampaign(key, value)} ink={t.ink} muted={t.inkMid} border={t.inputBorder} />
+                ))}
+                <div>
+                  <label style={labelStyle(t.inkMid)}>Private note</label>
+                  <textarea value={campaign.note} onChange={(event) => updateCampaign('note', event.target.value)} placeholder="Optional context. Not added to URL." rows={3} style={{ ...inputStyle(t.inputBorder, t.ink), marginBottom: 0, resize: 'vertical' }} />
+                </div>
+              </div>
             </article>
 
             <article style={panel(t.rule, cardBg, 22)}>
@@ -390,9 +425,12 @@ const Dashboard = () => {
   );
 };
 
-const ChartPanel = ({ title, icon, rule, bg, ink, children }: { title: string; icon: React.ReactNode; rule: string; bg: string; ink: string; children: React.ReactNode }) => (
+const ChartPanel = ({ title, icon, rule, bg, ink, action, children }: { title: string; icon: React.ReactNode; rule: string; bg: string; ink: string; action?: React.ReactNode; children: React.ReactNode }) => (
   <article style={{ ...panel(rule, bg, 20), minHeight: 320 }}>
-    <h2 style={sectionTitle(ink)}>{icon}{title}</h2>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap', marginBottom: 16 }}>
+      <h2 style={{ ...sectionTitle(ink), marginBottom: 0 }}>{icon}{title}</h2>
+      {action}
+    </div>
     <div style={{ height: 250 }}>{children}</div>
   </article>
 );
@@ -420,19 +458,17 @@ const RankPanel = ({ title, rows, rule, bg, ink, muted, accent }: { title: strin
   );
 };
 
-const UtmField = ({ name, value, onChange, ink, muted, border }: { name: UtmKey; value: string; onChange: (value: string) => void; ink: string; muted: string; border: string }) => {
-  const selected = utmOptions[name].find((option) => option.value === value);
-  return (
-    <div style={{ marginBottom: 14 }}>
-      <label style={labelStyle(muted)}>utm_{name}</label>
-      <select value={value} onChange={(event) => onChange(event.target.value)} style={inputStyle(border, ink)}>
+const UtmField = ({ name, value, onChange, ink, muted, border }: { name: UtmKey; value: string; onChange: (value: string) => void; ink: string; muted: string; border: string }) => (
+  <div>
+    <label style={labelStyle(muted)}>utm_{name}</label>
+    <div className="utm-field-row" style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, 0.7fr) minmax(150px, 1fr)', gap: 10 }}>
+      <select value={value} onChange={(event) => onChange(event.target.value)} style={{ ...inputStyle(border, ink), marginBottom: 0 }}>
         {utmOptions[name].map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
       </select>
-      <input value={value} onChange={(event) => onChange(event.target.value)} placeholder={`custom-${name}`} style={{ ...inputStyle(border, ink), marginTop: 8, marginBottom: 0 }} />
-      <p style={{ fontFamily: SANS, fontSize: 11, color: muted, lineHeight: 1.5, marginTop: 7 }}>{selected?.description || 'Custom campaign value.'}</p>
+      <input value={value} onChange={(event) => onChange(event.target.value)} placeholder={`custom-${name}`} style={{ ...inputStyle(border, ink), marginBottom: 0 }} />
     </div>
-  );
-};
+  </div>
+);
 
 const centerPage = (background: string, color: string): React.CSSProperties => ({ minHeight: '100vh', display: 'grid', placeItems: 'center', background, color });
 const panel = (border: string, background: string, padding: number): React.CSSProperties => ({ border: `1px solid ${border}`, background, borderRadius: 8, padding });
@@ -442,9 +478,20 @@ const inputStyle = (border: string, color: string): React.CSSProperties => ({ wi
 const actionButton = (bg: string, color: string): React.CSSProperties => ({ width: '100%', border: 'none', borderRadius: 6, background: bg, color, fontFamily: SANS, fontWeight: 800, padding: '12px 16px', cursor: 'pointer', display: 'inline-flex', justifyContent: 'center', alignItems: 'center', gap: 8 });
 const smallButton = (bg: string, color: string, border?: string): React.CSSProperties => ({ border: border ? `1px solid ${border}` : 'none', borderRadius: 6, background: bg, color, fontFamily: SANS, fontSize: 12, fontWeight: 800, padding: '10px 13px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 });
 const tabButton = (active: boolean, bg: string, activeColor: string, inactiveColor: string): React.CSSProperties => ({ border: 'none', borderRadius: 6, background: active ? bg : 'transparent', color: active ? activeColor : inactiveColor, fontFamily: SANS, fontSize: 13, fontWeight: 800, padding: '10px 14px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 });
+const rangeButton = (active: boolean, bg: string, activeColor: string, inactiveColor: string, border: string): React.CSSProperties => ({ border: '1px solid ' + (active ? bg : border), borderRadius: 6, background: active ? bg : 'transparent', color: active ? activeColor : inactiveColor, fontFamily: SANS, fontSize: 11, fontWeight: 800, padding: '7px 9px', cursor: 'pointer' });
 const sectionTitle = (color: string): React.CSSProperties => ({ fontFamily: SANS, fontSize: 15, fontWeight: 900, color, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 });
 const chartTitle = (color: string): React.CSSProperties => ({ fontFamily: SANS, fontSize: 15, fontWeight: 900, color });
-const tooltip = (background: string, border: string, color: string): React.CSSProperties => ({ background, border: `1px solid ${border}`, color, fontFamily: SANS, borderRadius: 8 });
+const tooltip = (background: string, border: string, color: string): React.CSSProperties => ({ background, border: '1px solid ' + border, color, fontFamily: SANS, borderRadius: 8 });
+
+const EmptyState = ({ title, text, muted }: { title: string; text: string; muted: string }) => (
+  <div style={{ height: '100%', display: 'grid', placeItems: 'center', textAlign: 'center', padding: 18 }}>
+    <div>
+      <p style={{ fontFamily: SANS, fontWeight: 900, fontSize: 14, marginBottom: 6 }}>{title}</p>
+      <p style={{ fontFamily: SANS, color: muted, fontSize: 12, lineHeight: 1.5 }}>{text}</p>
+    </div>
+  </div>
+);
 
 export default Dashboard;
+
 
