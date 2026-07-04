@@ -1,4 +1,4 @@
-import { cleanId, cleanOptionalText, cleanPath, deviceFromUserAgent, getCountryCode } from './_lib/analytics.js';
+import { cleanId, cleanOptionalText, cleanPath, deviceFromUserAgent, getCountryCode, getUtmParams } from './_lib/analytics.js';
 import { ensureAnalyticsSchema, sql } from './_lib/db.js';
 import { badRequest, json, methodNotAllowed, parseJson } from './_lib/http.js';
 
@@ -18,6 +18,7 @@ export async function POST(request: Request) {
 
   const path = cleanPath(body?.path);
   const referrer = cleanOptionalText(body?.referrer || request.headers.get('referer'));
+  const { utmSource, utmMedium, utmContent } = getUtmParams(path);
   const deviceType = deviceFromUserAgent(request.headers.get('user-agent'));
   const countryCode = getCountryCode(request);
 
@@ -34,15 +35,19 @@ export async function POST(request: Request) {
   `;
 
   await sql`
-    INSERT INTO analytics_sessions (session_id, visitor_id, referrer, device_type, country_code)
-    VALUES (${sessionId}, ${visitorId}, ${referrer}, ${deviceType}, ${countryCode})
+    INSERT INTO analytics_sessions (session_id, visitor_id, referrer, utm_source, utm_medium, utm_content, device_type, country_code)
+    VALUES (${sessionId}, ${visitorId}, ${referrer}, ${utmSource}, ${utmMedium}, ${utmContent}, ${deviceType}, ${countryCode})
     ON CONFLICT (session_id)
-    DO UPDATE SET last_seen = NOW()
+    DO UPDATE SET
+      last_seen = NOW(),
+      utm_source = COALESCE(analytics_sessions.utm_source, EXCLUDED.utm_source),
+      utm_medium = COALESCE(analytics_sessions.utm_medium, EXCLUDED.utm_medium),
+      utm_content = COALESCE(analytics_sessions.utm_content, EXCLUDED.utm_content)
   `;
 
   await sql`
-    INSERT INTO analytics_page_views (visitor_id, session_id, path, referrer, device_type, country_code)
-    VALUES (${visitorId}, ${sessionId}, ${path}, ${referrer}, ${deviceType}, ${countryCode})
+    INSERT INTO analytics_page_views (visitor_id, session_id, path, referrer, utm_source, utm_medium, utm_content, device_type, country_code)
+    VALUES (${visitorId}, ${sessionId}, ${path}, ${referrer}, ${utmSource}, ${utmMedium}, ${utmContent}, ${deviceType}, ${countryCode})
   `;
 
   return new Response(null, { status: 204 });

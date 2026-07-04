@@ -12,7 +12,9 @@ const LINKS = [
 const Contact = () => {
   const { t } = useTheme();
   const ref = useReveal();
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  type ContactForm = { name: string; email: string; message: string };
+
+  const [form, setForm] = useState<ContactForm>({ name: '', email: '', message: '' });
   const [sending, setSending] = useState(false);
   const [msg, setMsg] = useState('');
   const [ok, setOk] = useState(false);
@@ -107,8 +109,8 @@ const Contact = () => {
           style={{ display: 'flex', flexDirection: 'column', gap: 20 }}
         >
           {[
-            { key: 'name', label: 'Your name', type: 'text', placeholder: 'Harsh Kumar' },
-            { key: 'email', label: 'Email address', type: 'email', placeholder: 'you@example.com' },
+            { key: 'name' as const, label: 'Your name', type: 'text', placeholder: 'Harsh Kumar' },
+            { key: 'email' as const, label: 'Email address', type: 'email', placeholder: 'you@example.com' },
           ].map((field) => (
             <div key={field.key} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: t.inkFaint, transition: 'color 0.3s' }}>
@@ -117,7 +119,7 @@ const Contact = () => {
               <input
                 type={field.type} required
                 placeholder={field.placeholder}
-                value={(form as any)[field.key]}
+                value={form[field.key]}
                 onChange={(e) => setForm((p) => ({ ...p, [field.key]: e.target.value }))}
                 className="ed-input"
               />
@@ -173,3 +175,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

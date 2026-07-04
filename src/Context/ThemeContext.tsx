@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-/* ─── TOKEN SHAPES ─────────────────────────────────── */
+/* --- TOKEN SHAPES ----------------------------------- */
 export interface ThemeTokens {
   bg:        string;   // page background
   surface:   string;   // nav / marquee bg
@@ -23,7 +23,7 @@ export interface ThemeTokens {
   metricNum:   string;
 }
 
-/* ─── LIGHT TOKENS ─────────────────────────────────── */
+/* --- LIGHT TOKENS ----------------------------------- */
 export const LIGHT: ThemeTokens = {
   bg:            '#FFFFFF',
   surface:       '#FFFFFF',
@@ -46,7 +46,7 @@ export const LIGHT: ThemeTokens = {
   metricNum:     '#1A1A1A',
 };
 
-/* ─── DARK TOKENS ──────────────────────────────────── */
+/* --- DARK TOKENS ------------------------------------ */
 export const DARK: ThemeTokens = {
   bg:            '#111110',
   surface:       '#111110',
@@ -69,35 +69,43 @@ export const DARK: ThemeTokens = {
   metricNum:     '#F0EFE9',
 };
 
-/* ─── CONTEXT ───────────────────────────────────────── */
+/* --- CONTEXT ---------------------------------------- */
 interface ThemeCtx {
   dark: boolean;
   toggle: () => void;
   t: ThemeTokens;
 }
 
+const noop = () => undefined;
+
 const ThemeContext = createContext<ThemeCtx>({
   dark: false,
-  toggle: () => {},
+  toggle: noop,
   t: LIGHT,
 });
 
 export const useTheme = () => useContext(ThemeContext);
 
-/* ─── PROVIDER ──────────────────────────────────────── */
+/* --- PROVIDER --------------------------------------- */
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [dark, setDark] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('hk-theme');
       if (saved) return saved === 'dark';
-    } catch {}
+    } catch {
+      return false;
+    }
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   const toggle = () =>
     setDark((d) => {
       const next = !d;
-      try { localStorage.setItem('hk-theme', next ? 'dark' : 'light'); } catch {}
+      try {
+        localStorage.setItem('hk-theme', next ? 'dark' : 'light');
+      } catch {
+        return next;
+      }
       return next;
     });
 

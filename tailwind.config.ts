@@ -1,5 +1,9 @@
-
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
+
+type AddUtilitiesApi = {
+	addUtilities: (utilities: Record<string, Record<string, string>>) => void;
+};
 
 export default {
 	darkMode: ["class"],
@@ -113,8 +117,8 @@ export default {
 		}
 	},
 	plugins: [
-		require("tailwindcss-animate"),
-		function({ addUtilities }: any) {
+		animate,
+		function({ addUtilities }: AddUtilitiesApi) {
 			const newUtilities = {
 				'.animation-delay-75': {
 					'animation-delay': '75ms',

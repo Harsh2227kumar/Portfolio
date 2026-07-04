@@ -12,10 +12,30 @@ export const cleanPath = (value: unknown) => {
   return trimmed.slice(0, 240);
 };
 
+export const cleanUtmValue = (value: unknown) => {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) return null;
+  return trimmed.replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80) || null;
+};
+
 export const cleanOptionalText = (value: unknown, max = 240) => {
   if (typeof value !== 'string') return null;
   const trimmed = value.trim();
   return trimmed ? trimmed.slice(0, max) : null;
+};
+
+export const getUtmParams = (path: string) => {
+  try {
+    const url = new URL(path, 'https://portfolio.local');
+    return {
+      utmSource: cleanUtmValue(url.searchParams.get('utm_source')),
+      utmMedium: cleanUtmValue(url.searchParams.get('utm_medium')),
+      utmContent: cleanUtmValue(url.searchParams.get('utm_content')),
+    };
+  } catch {
+    return { utmSource: null, utmMedium: null, utmContent: null };
+  }
 };
 
 export const deviceFromUserAgent = (userAgent: string | null) => {

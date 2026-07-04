@@ -4,6 +4,8 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -11,7 +13,22 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Eye, LogOut, RefreshCcw, Users, UserPlus, Activity, Lock } from 'lucide-react';
+import {
+  Activity,
+  BarChart3,
+  CalendarDays,
+  Check,
+  Clipboard,
+  Eye,
+  Link,
+  Lock,
+  LogOut,
+  Megaphone,
+  Monitor,
+  RefreshCcw,
+  UserPlus,
+  Users,
+} from 'lucide-react';
 import { useTheme } from '@/Context/ThemeContext';
 
 interface Summary {
@@ -19,26 +36,81 @@ interface Summary {
   newUsers: number;
   sessions: number;
   pageViews: number;
+  campaignSessions: number;
+  campaignViews: number;
 }
 
-interface NewReturning {
-  newUsers: number;
-  returningUsers: number;
-}
-
-interface HourlyPoint {
-  hour: string;
+interface TrendPoint {
+  date?: string;
+  month?: string;
+  views: number;
   users: number;
+  sessions?: number;
+}
+
+interface RankedMetric {
+  name: string;
+  views: number;
+  users?: number;
+  sessions?: number;
+}
+
+interface CampaignMetric {
+  source: string;
+  medium: string;
+  content: string;
+  views: number;
+  users: number;
+  lastSeen: string;
+}
+
+interface Insights {
+  summary: Summary;
+  daily: TrendPoint[];
+  monthly: TrendPoint[];
+  utm: {
+    sources: RankedMetric[];
+    mediums: RankedMetric[];
+    contents: RankedMetric[];
+  };
+  devices: RankedMetric[];
+  recentCampaigns: CampaignMetric[];
 }
 
 const numberFormat = new Intl.NumberFormat('en-IN');
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const SERIF = "'Instrument Serif', Georgia, serif";
 
-const defaultSummary: Summary = {
-  users: 0,
-  newUsers: 0,
-  sessions: 0,
-  pageViews: 0,
+const defaultInsights: Insights = {
+  summary: { users: 0, newUsers: 0, sessions: 0, pageViews: 0, campaignSessions: 0, campaignViews: 0 },
+  daily: [],
+  monthly: [],
+  utm: { sources: [], mediums: [], contents: [] },
+  devices: [],
+  recentCampaigns: [],
 };
+
+const utmOptions = {
+  source: [
+    { value: 'linkedin', label: 'LinkedIn', description: 'Use when the link is posted on LinkedIn profiles, posts, or messages.' },
+    { value: 'behance', label: 'Behance', description: 'Use for Behance project pages or profile placements.' },
+    { value: 'github', label: 'GitHub', description: 'Use for README links, repo profiles, or project documentation.' },
+    { value: 'resume', label: 'Resume', description: 'Use when the link is inside a resume PDF or shared CV.' },
+  ],
+  medium: [
+    { value: 'social', label: 'Social', description: 'Use for social network traffic.' },
+    { value: 'portfolio', label: 'Portfolio', description: 'Use for links placed inside portfolio/project pages.' },
+    { value: 'pdf', label: 'PDF', description: 'Use for links inside downloadable documents.' },
+  ],
+  content: [
+    { value: 'bio-link', label: 'Bio link', description: 'Use for profile bio links.' },
+    { value: 'featured-project', label: 'Featured project', description: 'Use for a specific highlighted project placement.' },
+    { value: 'footer', label: 'Footer', description: 'Use for footer or repeated low-priority placements.' },
+  ],
+};
+
+type Tab = 'analytics' | 'campaign';
+type UtmKey = keyof typeof utmOptions;
 
 const Dashboard = () => {
   const { t, dark } = useTheme();
@@ -47,46 +119,34 @@ const Dashboard = () => {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loadingData, setLoadingData] = useState(false);
-  const [summary, setSummary] = useState<Summary>(defaultSummary);
-  const [newReturning, setNewReturning] = useState<NewReturning>({ newUsers: 0, returningUsers: 0 });
-  const [hourly, setHourly] = useState<HourlyPoint[]>([]);
+  const [insights, setInsights] = useState<Insights>(defaultInsights);
+  const [activeTab, setActiveTab] = useState<Tab>('analytics');
+  const [copied, setCopied] = useState(false);
+  const [campaign, setCampaign] = useState({
+    path: '/',
+    source: 'linkedin',
+    medium: 'social',
+    content: 'bio-link',
+    note: '',
+  });
 
-  const SANS = "'Instrument Sans', system-ui, sans-serif";
-  const SERIF = "'Instrument Serif', Georgia, serif";
-  const accent = dark ? '#A78BFA' : '#7C3AED';
-  const accentSoft = dark ? 'rgba(167,139,250,0.18)' : 'rgba(124,58,237,0.12)';
+  const accent = dark ? '#22D3EE' : '#0F766E';
+  const accentTwo = dark ? '#F59E0B' : '#D97706';
+  const accentSoft = dark ? 'rgba(34,211,238,0.16)' : 'rgba(15,118,110,0.11)';
   const cardBg = dark ? 'rgba(255,255,255,0.035)' : 'rgba(0,0,0,0.025)';
   const grid = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
 
   const loadDashboard = async () => {
     setLoadingData(true);
     try {
-      const [summaryRes, newReturningRes, hourlyRes] = await Promise.all([
-        fetch('/api/dash/summary', { credentials: 'include' }),
-        fetch('/api/dash/new-vs-returning', { credentials: 'include' }),
-        fetch('/api/dash/hourly-users', { credentials: 'include' }),
-      ]);
-
-      if ([summaryRes, newReturningRes, hourlyRes].some((res) => res.status === 401)) {
+      const res = await fetch('/api/dash/insights', { credentials: 'include' });
+      if (res.status === 401) {
         setAuthenticated(false);
         return;
       }
-
-      const summaryJson = await summaryRes.json();
-      const newReturningJson = await newReturningRes.json();
-      const hourlyJson = await hourlyRes.json();
-
-      setSummary({
-        users: Number(summaryJson.users || 0),
-        newUsers: Number(summaryJson.newUsers || 0),
-        sessions: Number(summaryJson.sessions || 0),
-        pageViews: Number(summaryJson.pageViews || 0),
-      });
-      setNewReturning({
-        newUsers: Number(newReturningJson.newUsers || 0),
-        returningUsers: Number(newReturningJson.returningUsers || 0),
-      });
-      setHourly(Array.isArray(hourlyJson.hours) ? hourlyJson.hours : []);
+      if (!res.ok) return;
+      const data = await res.json();
+      setInsights({ ...defaultInsights, ...data, utm: { ...defaultInsights.utm, ...(data.utm || {}) } });
     } finally {
       setLoadingData(false);
     }
@@ -96,10 +156,7 @@ const Dashboard = () => {
     const checkAuth = async () => {
       try {
         const res = await fetch('/api/auth/me', { credentials: 'include' });
-        if (!res.ok) {
-          setAuthenticated(false);
-          return;
-        }
+        if (!res.ok) return setAuthenticated(false);
         const data = await res.json();
         setAuthenticated(Boolean(data.authenticated));
         if (data.authenticated) await loadDashboard();
@@ -111,20 +168,28 @@ const Dashboard = () => {
     checkAuth();
   }, []);
 
-  const donutData = useMemo(() => {
-    const rows = [
-      { name: 'New', value: newReturning.newUsers },
-      { name: 'Returning', value: newReturning.returningUsers },
-    ];
+  const generatedUrl = useMemo(() => {
+    const origin = typeof window === 'undefined' ? 'https://your-domain.com' : window.location.origin;
+    const normalizedPath = campaign.path.startsWith('/') ? campaign.path : `/${campaign.path}`;
+    const url = new URL(normalizedPath, origin);
+    url.searchParams.set('utm_source', campaign.source);
+    url.searchParams.set('utm_medium', campaign.medium);
+    url.searchParams.set('utm_content', campaign.content);
+    return url.toString();
+  }, [campaign]);
 
-    return rows.some((row) => row.value > 0) ? rows : [{ name: 'No data', value: 1 }];
-  }, [newReturning]);
+  const sourceDonut = useMemo(() => {
+    const rows = insights.utm.sources.length ? insights.utm.sources : [{ name: 'No data', views: 1 }];
+    return rows.map((row) => ({ name: row.name, value: Number(row.views || 0) || 1 }));
+  }, [insights.utm.sources]);
 
-  const cards = [
-    { label: 'Users', value: summary.users, Icon: Users },
-    { label: 'New Users', value: summary.newUsers, Icon: UserPlus },
-    { label: 'Sessions', value: summary.sessions, Icon: Activity },
-    { label: 'Page Views', value: summary.pageViews, Icon: Eye },
+  const metricCards = [
+    { label: 'Users', value: insights.summary.users, Icon: Users },
+    { label: 'New Users', value: insights.summary.newUsers, Icon: UserPlus },
+    { label: 'Sessions', value: insights.summary.sessions, Icon: Activity },
+    { label: 'Page Views', value: insights.summary.pageViews, Icon: Eye },
+    { label: 'Campaign Sessions', value: insights.summary.campaignSessions, Icon: Megaphone },
+    { label: 'Campaign Views', value: insights.summary.campaignViews, Icon: BarChart3 },
   ];
 
   const login = async (event: FormEvent<HTMLFormElement>) => {
@@ -139,8 +204,9 @@ const Dashboard = () => {
     });
 
     if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      setLoginError(data?.error || 'Could not log in.');
+      const contentType = res.headers.get('content-type') || '';
+      const data = contentType.includes('application/json') ? await res.json().catch(() => null) : null;
+      setLoginError(data?.error || `Could not log in. Server returned ${res.status}.`);
       return;
     }
 
@@ -154,182 +220,231 @@ const Dashboard = () => {
     setAuthenticated(false);
   };
 
+  const copyUrl = async () => {
+    await navigator.clipboard.writeText(generatedUrl);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1600);
+  };
+
+  const updateCampaign = (key: keyof typeof campaign, value: string) => {
+    const clean = key === 'note' || key === 'path' ? value : value.toLowerCase().replace(/[^a-z0-9_-]+/g, '-');
+    setCampaign((current) => ({ ...current, [key]: clean }));
+  };
+
   if (checking) {
-    return (
-      <main style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: t.bg, color: t.ink }}>
-        <p style={{ fontFamily: SANS, color: t.inkFaint }}>Checking dashboard access...</p>
-      </main>
-    );
+    return <main style={centerPage(t.bg, t.ink)}><p style={{ fontFamily: SANS, color: t.inkFaint }}>Checking dashboard access...</p></main>;
   }
 
   if (!authenticated) {
     return (
-      <main style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: t.bg, color: t.ink, padding: 24 }}>
-        <form
-          onSubmit={login}
-          style={{
-            width: 'min(100%, 420px)',
-            border: `1px solid ${t.rule}`,
-            background: cardBg,
-            padding: 'clamp(24px,5vw,40px)',
-            borderRadius: 8,
-          }}
-        >
-          <div style={{ width: 42, height: 42, borderRadius: '50%', background: accentSoft, color: accent, display: 'grid', placeItems: 'center', marginBottom: 24 }}>
-            <Lock size={18} />
-          </div>
-          <p style={{ fontFamily: SANS, fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 8 }}>
-            Private Dashboard
-          </p>
-          <h1 style={{ fontFamily: SERIF, fontSize: 'clamp(34px,7vw,54px)', lineHeight: 0.95, color: t.ink, marginBottom: 24 }}>
-            Analytics Login
-          </h1>
-          <label style={{ display: 'block', fontFamily: SANS, fontSize: 12, fontWeight: 700, color: t.inkMid, marginBottom: 8 }}>
-            Admin password
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete="current-password"
-            style={{
-              width: '100%',
-              border: `1px solid ${t.inputBorder}`,
-              background: 'transparent',
-              color: t.ink,
-              borderRadius: 6,
-              padding: '12px 13px',
-              outline: 'none',
-              fontFamily: SANS,
-              marginBottom: 14,
-            }}
-          />
-          {loginError && (
-            <p style={{ fontFamily: SANS, fontSize: 12, color: '#EF4444', marginBottom: 14 }}>{loginError}</p>
-          )}
-          <button
-            type="submit"
-            style={{
-              width: '100%',
-              border: 'none',
-              borderRadius: 6,
-              background: t.btnBg,
-              color: t.btnFg,
-              fontFamily: SANS,
-              fontWeight: 800,
-              padding: '12px 16px',
-              cursor: 'pointer',
-            }}
-          >
-            Open Dashboard
-          </button>
+      <main style={{ ...centerPage(t.bg, t.ink), padding: 24 }}>
+        <form onSubmit={login} style={{ width: 'min(100%, 420px)', border: `1px solid ${t.rule}`, background: cardBg, padding: 'clamp(24px,5vw,40px)', borderRadius: 8 }}>
+          <div style={{ width: 42, height: 42, borderRadius: '50%', background: accentSoft, color: accent, display: 'grid', placeItems: 'center', marginBottom: 24 }}><Lock size={18} /></div>
+          <p style={eyebrow(t.inkFaint)}>Private Dashboard</p>
+          <h1 style={{ fontFamily: SERIF, fontSize: 'clamp(34px,7vw,54px)', lineHeight: 0.95, color: t.ink, marginBottom: 24 }}>Analytics Login</h1>
+          <label style={labelStyle(t.inkMid)}>Admin password</label>
+          <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" style={inputStyle(t.inputBorder, t.ink)} />
+          {loginError && <p style={{ fontFamily: SANS, fontSize: 12, color: '#EF4444', marginBottom: 14 }}>{loginError}</p>}
+          <button type="submit" style={actionButton(t.btnBg, t.btnFg)}>Open Dashboard</button>
         </form>
       </main>
     );
   }
 
   return (
-    <main style={{ minHeight: '100vh', background: t.bg, color: t.ink, padding: 'clamp(24px,4vw,48px)' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-        <header style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 18, flexWrap: 'wrap', marginBottom: 28 }}>
+    <main style={{ minHeight: '100vh', background: t.bg, color: t.ink, padding: 'clamp(20px,4vw,44px)' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto' }}>
+        <header style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 18, flexWrap: 'wrap', marginBottom: 22 }}>
           <div>
-            <p style={{ fontFamily: SANS, fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: t.inkFaint, marginBottom: 8 }}>
-              Portfolio Analytics
-            </p>
-            <h1 style={{ fontFamily: SERIF, fontSize: 'clamp(42px,7vw,76px)', lineHeight: 0.9, color: t.ink }}>
-              Dashboard
-            </h1>
+            <p style={eyebrow(t.inkFaint)}>Portfolio Dashboard</p>
+            <h1 style={{ fontFamily: SERIF, fontSize: 'clamp(40px,7vw,74px)', lineHeight: 0.9, color: t.ink }}>Insights</h1>
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={loadDashboard} style={actionButton(t.btnBg, t.btnFg, SANS)} disabled={loadingData}>
-              <RefreshCcw size={15} />
-              {loadingData ? 'Refreshing' : 'Refresh'}
-            </button>
-            <button onClick={logout} style={actionButton('transparent', t.inkMid, SANS, t.rule)}>
-              <LogOut size={15} />
-              Logout
-            </button>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <button onClick={loadDashboard} style={smallButton(t.btnBg, t.btnFg)} disabled={loadingData}><RefreshCcw size={15} />{loadingData ? 'Refreshing' : 'Refresh'}</button>
+            <button onClick={logout} style={smallButton('transparent', t.inkMid, t.rule)}><LogOut size={15} />Logout</button>
           </div>
         </header>
 
-        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16, marginBottom: 16 }}>
-          {cards.map(({ label, value, Icon }) => (
-            <article key={label} style={{ border: `1px solid ${t.rule}`, background: cardBg, borderRadius: 8, padding: 22 }}>
-              <Icon size={20} color={accent} />
-              <p style={{ fontFamily: SANS, fontSize: 13, color: t.inkMid, marginTop: 18, marginBottom: 8 }}>{label}</p>
-              <strong style={{ fontFamily: SANS, fontSize: 'clamp(26px,4vw,34px)', color: t.ink }}>
-                {numberFormat.format(value)}
-              </strong>
+        <nav style={{ display: 'inline-flex', gap: 6, border: `1px solid ${t.rule}`, borderRadius: 8, padding: 5, marginBottom: 20, background: cardBg }}>
+          <button onClick={() => setActiveTab('analytics')} style={tabButton(activeTab === 'analytics', accent, t.btnFg, t.inkMid)}><BarChart3 size={16} />Analytics</button>
+          <button onClick={() => setActiveTab('campaign')} style={tabButton(activeTab === 'campaign', accent, t.btnFg, t.inkMid)}><Megaphone size={16} />Campaign</button>
+        </nav>
+
+        {activeTab === 'analytics' ? (
+          <>
+            <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))', gap: 14, marginBottom: 14 }}>
+              {metricCards.map(({ label, value, Icon }) => (
+                <article key={label} style={panel(t.rule, cardBg, 18)}>
+                  <Icon size={19} color={accent} />
+                  <p style={{ fontFamily: SANS, fontSize: 12, color: t.inkMid, marginTop: 15, marginBottom: 7 }}>{label}</p>
+                  <strong style={{ fontFamily: SANS, fontSize: 'clamp(24px,4vw,32px)', color: t.ink }}>{numberFormat.format(value)}</strong>
+                </article>
+              ))}
+            </section>
+
+            <section className="dash-main-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.45fr) minmax(280px, 0.85fr)', gap: 14, marginBottom: 14 }}>
+              <ChartPanel title="Date Wise Views" icon={<CalendarDays size={17} />} rule={t.rule} bg={cardBg} ink={t.ink}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={insights.daily} margin={{ top: 10, right: 12, left: -12, bottom: 0 }}>
+                    <CartesianGrid stroke={grid} vertical={false} />
+                    <XAxis dataKey="date" tick={{ fill: t.inkFaint, fontSize: 11 }} />
+                    <YAxis tick={{ fill: t.inkFaint, fontSize: 11 }} />
+                    <Tooltip contentStyle={tooltip(t.bg, t.rule, t.ink)} />
+                    <Line type="monotone" dataKey="views" stroke={accent} strokeWidth={3} dot={false} />
+                    <Line type="monotone" dataKey="users" stroke={accentTwo} strokeWidth={2} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartPanel>
+
+              <ChartPanel title="UTM Source Mix" icon={<Megaphone size={17} />} rule={t.rule} bg={cardBg} ink={t.ink}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={sourceDonut} dataKey="value" nameKey="name" innerRadius={56} outerRadius={88} paddingAngle={4}>
+                      {sourceDonut.map((entry, index) => <Cell key={entry.name} fill={[accent, accentTwo, '#6366F1', '#10B981', '#EF4444', '#8B5CF6'][index % 6]} />)}
+                    </Pie>
+                    <Tooltip contentStyle={tooltip(t.bg, t.rule, t.ink)} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </ChartPanel>
+            </section>
+
+            <section className="dash-chart-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+              <ChartPanel title="Month Wise Growth" icon={<BarChart3 size={17} />} rule={t.rule} bg={cardBg} ink={t.ink}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={insights.monthly} margin={{ top: 10, right: 12, left: -12, bottom: 0 }}>
+                    <CartesianGrid stroke={grid} vertical={false} />
+                    <XAxis dataKey="month" tick={{ fill: t.inkFaint, fontSize: 11 }} />
+                    <YAxis tick={{ fill: t.inkFaint, fontSize: 11 }} />
+                    <Tooltip contentStyle={tooltip(t.bg, t.rule, t.ink)} cursor={{ fill: accentSoft }} />
+                    <Bar dataKey="views" fill={accent} radius={[5, 5, 0, 0]} />
+                    <Bar dataKey="users" fill={accentTwo} radius={[5, 5, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartPanel>
+
+              <ChartPanel title="Device Count" icon={<Monitor size={17} />} rule={t.rule} bg={cardBg} ink={t.ink}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={insights.devices} layout="vertical" margin={{ top: 6, right: 18, left: 18, bottom: 0 }}>
+                    <CartesianGrid stroke={grid} horizontal={false} />
+                    <XAxis type="number" tick={{ fill: t.inkFaint, fontSize: 11 }} />
+                    <YAxis dataKey="name" type="category" tick={{ fill: t.inkFaint, fontSize: 11 }} width={80} />
+                    <Tooltip contentStyle={tooltip(t.bg, t.rule, t.ink)} />
+                    <Bar dataKey="views" fill={accentTwo} radius={[0, 5, 5, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartPanel>
+            </section>
+
+            <section className="dash-rank-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
+              <RankPanel title="utm_source" rows={insights.utm.sources} rule={t.rule} bg={cardBg} ink={t.ink} muted={t.inkMid} accent={accent} />
+              <RankPanel title="utm_medium" rows={insights.utm.mediums} rule={t.rule} bg={cardBg} ink={t.ink} muted={t.inkMid} accent={accentTwo} />
+              <RankPanel title="utm_content" rows={insights.utm.contents} rule={t.rule} bg={cardBg} ink={t.ink} muted={t.inkMid} accent="#6366F1" />
+            </section>
+          </>
+        ) : (
+          <section className="campaign-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 0.85fr) minmax(0, 1.15fr)', gap: 14 }}>
+            <article style={panel(t.rule, cardBg, 22)}>
+              <h2 style={sectionTitle(t.ink)}><Link size={18} />Create UTM Link</h2>
+              <label style={labelStyle(t.inkMid)}>Destination path</label>
+              <input value={campaign.path} onChange={(event) => updateCampaign('path', event.target.value)} placeholder="/ or /#projects" style={inputStyle(t.inputBorder, t.ink)} />
+              {(['source', 'medium', 'content'] as UtmKey[]).map((key) => (
+                <UtmField key={key} name={key} value={campaign[key]} onChange={(value) => updateCampaign(key, value)} ink={t.ink} muted={t.inkMid} border={t.inputBorder} />
+              ))}
+              <label style={labelStyle(t.inkMid)}>Description / context</label>
+              <textarea value={campaign.note} onChange={(event) => updateCampaign('note', event.target.value)} placeholder="Internal note only, not added to the URL" rows={3} style={{ ...inputStyle(t.inputBorder, t.ink), resize: 'vertical' }} />
             </article>
-          ))}
-        </section>
 
-        <section className="dash-chart-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(260px, 360px) 1fr', gap: 16 }}>
-          <article style={{ border: `1px solid ${t.rule}`, background: cardBg, borderRadius: 8, padding: 22, minHeight: 330 }}>
-            <h2 style={chartTitle(SANS, t.ink)}>New vs Returning Users</h2>
-            <div style={{ height: 250 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={donutData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={88} paddingAngle={4}>
-                    {donutData.map((entry, index) => (
-                      <Cell key={entry.name} fill={entry.name === 'No data' ? t.rule : index === 0 ? accent : dark ? '#5B4B8A' : '#C4B5FD'} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ background: t.bg, border: `1px solid ${t.rule}`, color: t.ink }} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </article>
+            <article style={panel(t.rule, cardBg, 22)}>
+              <h2 style={sectionTitle(t.ink)}><Clipboard size={18} />Generated Campaign URL</h2>
+              <div style={{ border: `1px solid ${t.rule}`, borderRadius: 8, padding: 14, background: dark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.55)', color: t.ink, fontFamily: SANS, fontSize: 13, lineHeight: 1.6, wordBreak: 'break-all', marginBottom: 14 }}>{generatedUrl}</div>
+              <button onClick={copyUrl} style={actionButton(t.btnBg, t.btnFg)}>{copied ? <Check size={16} /> : <Clipboard size={16} />}{copied ? 'Copied' : 'Copy link'}</button>
 
-          <article style={{ border: `1px solid ${t.rule}`, background: cardBg, borderRadius: 8, padding: 22, minHeight: 330 }}>
-            <h2 style={chartTitle(SANS, t.ink)}>Average User Count by Time of Day</h2>
-            <div style={{ height: 250 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={hourly} margin={{ top: 12, right: 12, bottom: 22, left: 0 }}>
-                  <CartesianGrid stroke={grid} vertical={false} />
-                  <XAxis dataKey="hour" tick={{ fill: t.inkFaint, fontSize: 11 }} angle={-45} textAnchor="end" height={58} />
-                  <YAxis tick={{ fill: t.inkFaint, fontSize: 11 }} width={42} />
-                  <Tooltip contentStyle={{ background: t.bg, border: `1px solid ${t.rule}`, color: t.ink }} cursor={{ fill: accentSoft }} />
-                  <Bar dataKey="users" fill={accent} radius={[5, 5, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </article>
-        </section>
+              <div style={{ marginTop: 22 }}>
+                <h3 style={{ ...chartTitle(t.ink), marginBottom: 10 }}>Top Campaign Combinations</h3>
+                <div style={{ display: 'grid', gap: 10 }}>
+                  {(insights.recentCampaigns.length ? insights.recentCampaigns : [{ source: 'No campaign data yet', medium: '-', content: '-', views: 0, users: 0, lastSeen: '' }]).map((row) => (
+                    <div key={`${row.source}-${row.medium}-${row.content}`} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, borderBottom: `1px solid ${t.rule}`, paddingBottom: 10 }}>
+                      <div style={{ minWidth: 0 }}>
+                        <strong style={{ fontFamily: SANS, color: t.ink, fontSize: 13 }}>{row.source}</strong>
+                        <p style={{ fontFamily: SANS, color: t.inkMid, fontSize: 12, marginTop: 4, overflowWrap: 'anywhere' }}>{row.medium} / {row.content}</p>
+                      </div>
+                      <div style={{ textAlign: 'right', fontFamily: SANS }}>
+                        <strong style={{ color: accent }}>{numberFormat.format(row.views)}</strong>
+                        <p style={{ color: t.inkMid, fontSize: 12 }}>views</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </article>
+          </section>
+        )}
       </div>
 
       <style>{`
-        @media (max-width: 900px) {
-          .dash-chart-grid {
-            grid-template-columns: 1fr !important;
-          }
+        @media (max-width: 980px) {
+          .dash-main-grid, .dash-chart-grid, .dash-rank-grid, .campaign-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </main>
   );
 };
 
-const actionButton = (bg: string, color: string, fontFamily: string, border?: string): React.CSSProperties => ({
-  border: border ? `1px solid ${border}` : 'none',
-  borderRadius: 6,
-  background: bg,
-  color,
-  fontFamily,
-  fontSize: 12,
-  fontWeight: 800,
-  padding: '10px 13px',
-  cursor: 'pointer',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 8,
-});
+const ChartPanel = ({ title, icon, rule, bg, ink, children }: { title: string; icon: React.ReactNode; rule: string; bg: string; ink: string; children: React.ReactNode }) => (
+  <article style={{ ...panel(rule, bg, 20), minHeight: 320 }}>
+    <h2 style={sectionTitle(ink)}>{icon}{title}</h2>
+    <div style={{ height: 250 }}>{children}</div>
+  </article>
+);
 
-const chartTitle = (fontFamily: string, color: string): React.CSSProperties => ({
-  fontFamily,
-  fontSize: 15,
-  fontWeight: 800,
-  color,
-  marginBottom: 16,
-});
+const RankPanel = ({ title, rows, rule, bg, ink, muted, accent }: { title: string; rows: RankedMetric[]; rule: string; bg: string; ink: string; muted: string; accent: string }) => {
+  const max = Math.max(...rows.map((row) => row.views), 1);
+  return (
+    <article style={panel(rule, bg, 18)}>
+      <h2 style={chartTitle(ink)}>{title}</h2>
+      <div style={{ display: 'grid', gap: 12 }}>
+        {(rows.length ? rows : [{ name: 'No data yet', views: 0 }]).map((row) => (
+          <div key={row.name}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, fontFamily: SANS, fontSize: 12, color: ink, marginBottom: 6 }}>
+              <span style={{ overflowWrap: 'anywhere' }}>{row.name}</span>
+              <strong>{numberFormat.format(row.views)}</strong>
+            </div>
+            <div style={{ height: 7, borderRadius: 999, background: rule, overflow: 'hidden' }}>
+              <div style={{ width: `${Math.max(4, (row.views / max) * 100)}%`, height: '100%', background: accent }} />
+            </div>
+            <p style={{ fontFamily: SANS, fontSize: 11, color: muted, marginTop: 4 }}>{numberFormat.format(row.sessions || 0)} sessions / {numberFormat.format(row.users || 0)} users</p>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+};
+
+const UtmField = ({ name, value, onChange, ink, muted, border }: { name: UtmKey; value: string; onChange: (value: string) => void; ink: string; muted: string; border: string }) => {
+  const selected = utmOptions[name].find((option) => option.value === value);
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <label style={labelStyle(muted)}>utm_{name}</label>
+      <select value={value} onChange={(event) => onChange(event.target.value)} style={inputStyle(border, ink)}>
+        {utmOptions[name].map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+      </select>
+      <input value={value} onChange={(event) => onChange(event.target.value)} placeholder={`custom-${name}`} style={{ ...inputStyle(border, ink), marginTop: 8, marginBottom: 0 }} />
+      <p style={{ fontFamily: SANS, fontSize: 11, color: muted, lineHeight: 1.5, marginTop: 7 }}>{selected?.description || 'Custom campaign value.'}</p>
+    </div>
+  );
+};
+
+const centerPage = (background: string, color: string): React.CSSProperties => ({ minHeight: '100vh', display: 'grid', placeItems: 'center', background, color });
+const panel = (border: string, background: string, padding: number): React.CSSProperties => ({ border: `1px solid ${border}`, background, borderRadius: 8, padding });
+const eyebrow = (color: string): React.CSSProperties => ({ fontFamily: SANS, fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color, marginBottom: 8 });
+const labelStyle = (color: string): React.CSSProperties => ({ display: 'block', fontFamily: SANS, fontSize: 12, fontWeight: 800, color, marginBottom: 8 });
+const inputStyle = (border: string, color: string): React.CSSProperties => ({ width: '100%', border: `1px solid ${border}`, background: 'transparent', color, borderRadius: 6, padding: '11px 12px', outline: 'none', fontFamily: SANS, fontSize: 13, marginBottom: 14 });
+const actionButton = (bg: string, color: string): React.CSSProperties => ({ width: '100%', border: 'none', borderRadius: 6, background: bg, color, fontFamily: SANS, fontWeight: 800, padding: '12px 16px', cursor: 'pointer', display: 'inline-flex', justifyContent: 'center', alignItems: 'center', gap: 8 });
+const smallButton = (bg: string, color: string, border?: string): React.CSSProperties => ({ border: border ? `1px solid ${border}` : 'none', borderRadius: 6, background: bg, color, fontFamily: SANS, fontSize: 12, fontWeight: 800, padding: '10px 13px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 });
+const tabButton = (active: boolean, bg: string, activeColor: string, inactiveColor: string): React.CSSProperties => ({ border: 'none', borderRadius: 6, background: active ? bg : 'transparent', color: active ? activeColor : inactiveColor, fontFamily: SANS, fontSize: 13, fontWeight: 800, padding: '10px 14px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 });
+const sectionTitle = (color: string): React.CSSProperties => ({ fontFamily: SANS, fontSize: 15, fontWeight: 900, color, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 });
+const chartTitle = (color: string): React.CSSProperties => ({ fontFamily: SANS, fontSize: 15, fontWeight: 900, color });
+const tooltip = (background: string, border: string, color: string): React.CSSProperties => ({ background, border: `1px solid ${border}`, color, fontFamily: SANS, borderRadius: 8 });
 
 export default Dashboard;
+

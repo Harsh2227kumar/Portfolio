@@ -1,15 +1,37 @@
 import React, { useEffect, useRef } from 'react';
 
+type VantaEffect = {
+  destroy: () => void;
+};
+
+type VantaNetOptions = {
+  el: HTMLElement;
+  mouseControls: boolean;
+  touchControls: boolean;
+  gyroControls: boolean;
+  minHeight: number;
+  minWidth: number;
+  scale: number;
+  scaleMobile: number;
+  color: number;
+  backgroundColor: number;
+  points: number;
+  maxDistance: number;
+  spacing: number;
+};
+
 declare global {
   interface Window {
-    VANTA: any;
-    THREE: any;
+    VANTA?: {
+      NET: (options: VantaNetOptions) => VantaEffect;
+    };
+    THREE?: unknown;
   }
 }
 
 const VantaBackground = () => {
   const vantaRef = useRef<HTMLDivElement>(null);
-  const vantaEffect = useRef<any>(null);
+  const vantaEffect = useRef<VantaEffect | null>(null);
 
   useEffect(() => {
     // Load Three.js
