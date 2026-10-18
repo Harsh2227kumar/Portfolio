@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@/Context/ThemeContext';
+import { ResumeProvider, useResume } from '@/Context/ResumeContext';
 import { SIDEBAR_W } from '@/components/Navigation';
 import Preloader  from '@/components/Preloader';
 import Navigation from '@/components/Navigation';
@@ -12,6 +13,21 @@ import Skills     from '@/components/Skills';
 import BadgesCertifications from '@/components/BadgesCertifications';
 import Education  from '@/components/Education';
 import Contact    from '@/components/Contact';
+
+const FooterResumeLink = ({ color, hover, font }: { color: string; hover: string; font: string }) => {
+  const { open } = useResume();
+  return (
+    <button
+      type="button"
+      onClick={() => open('footer')}
+      style={{ fontFamily: font, fontSize: 12, color, background: 'none', border: 'none', padding: 0, cursor: 'pointer', transition: 'color 0.15s' }}
+      onMouseEnter={e => (e.currentTarget.style.color = hover)}
+      onMouseLeave={e => (e.currentTarget.style.color = color)}
+    >
+      Resume
+    </button>
+  );
+};
 
 const Index = () => {
   const { t } = useTheme();
@@ -35,7 +51,7 @@ const Index = () => {
   const S = "'Instrument Sans', system-ui, sans-serif";
 
   return (
-    <>
+    <ResumeProvider>
       {/* ── Fixed sidebar ───────────────────────────── */}
       <Navigation />
 
@@ -79,6 +95,7 @@ const Index = () => {
             © {new Date().getFullYear()} Harsh Kumar
           </span>
           <div style={{ display: 'flex', gap: 20 }}>
+            <FooterResumeLink color={t.inkFaint} hover={t.ink} font={S} />
             {[
               { label: 'GitHub',   href: 'https://github.com/harsh2227kumar' },
               { label: 'LinkedIn', href: 'https://www.linkedin.com/in/harsh-2227-kumar/' },
@@ -108,7 +125,7 @@ const Index = () => {
           }
         }
       `}</style>
-    </>
+    </ResumeProvider>
   );
 };
 

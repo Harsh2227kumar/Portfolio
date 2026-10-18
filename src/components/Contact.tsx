@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useReveal } from '../hooks/useReveal';
 import { useTheme } from '../Context/ThemeContext';
+import { useResume } from '../Context/ResumeContext';
 
 const LINKS = [
   { label: 'Email', value: 'harsh2227official@gmail.com', href: 'mailto:harsh2227official@gmail.com' },
@@ -11,6 +12,7 @@ const LINKS = [
 
 const Contact = () => {
   const { t } = useTheme();
+  const resume = useResume();
   const ref = useReveal();
   type ContactForm = { name: string; email: string; message: string };
 
@@ -99,6 +101,20 @@ const Contact = () => {
                 </a>
               ) : <div key={i}>{inner}</div>;
             })}
+            <button
+              type="button"
+              onClick={() => resume.open('contact')}
+              style={{ display: 'block', width: '100%', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left', transition: 'opacity 0.15s' }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.6')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '14px 0', borderBottom: `1px solid ${t.rule}`, transition: 'border-color 0.3s' }}>
+                <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 500, color: t.ink, transition: 'color 0.3s' }}>Resume</span>
+                <span style={{ fontFamily: SANS, fontSize: 12.5, color: t.inkFaint, transition: 'color 0.3s' }}>
+                  View &amp; download PDF ↗
+                </span>
+              </div>
+            </button>
           </div>
         </div>
 

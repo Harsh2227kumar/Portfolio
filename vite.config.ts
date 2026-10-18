@@ -1,7 +1,6 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 import type { IncomingMessage, ServerResponse } from "node:http";
 
 const apiRoutes: Record<string, string> = {
@@ -9,9 +8,8 @@ const apiRoutes: Record<string, string> = {
   "/api/auth/logout": "/api/auth/logout.ts",
   "/api/auth/me": "/api/auth/me.ts",
   "/api/track": "/api/track.ts",
-  "/api/dash/summary": "/api/dash/summary.ts",
-  "/api/dash/new-vs-returning": "/api/dash/new-vs-returning.ts",
-  "/api/dash/hourly-users": "/api/dash/hourly-users.ts",
+  "/api/resume": "/api/resume.ts",
+  "/api/dash/settings": "/api/dash/settings.ts",
   "/api/dash/insights": "/api/dash/insights.ts",
 };
 
@@ -78,11 +76,7 @@ export default defineConfig(({ mode }) => {
       host: "::",
       port: 8080,
     },
-    plugins: [
-      react(),
-      localApiPlugin(),
-      mode === "development" && componentTagger(),
-    ].filter(Boolean),
+    plugins: [react(), localApiPlugin()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

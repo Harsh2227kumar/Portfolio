@@ -32,9 +32,10 @@ export const getUtmParams = (path: string) => {
       utmSource: cleanUtmValue(url.searchParams.get('utm_source')),
       utmMedium: cleanUtmValue(url.searchParams.get('utm_medium')),
       utmContent: cleanUtmValue(url.searchParams.get('utm_content')),
+      utmCampaign: cleanUtmValue(url.searchParams.get('utm_campaign')),
     };
   } catch {
-    return { utmSource: null, utmMedium: null, utmContent: null };
+    return { utmSource: null, utmMedium: null, utmContent: null, utmCampaign: null };
   }
 };
 
@@ -46,7 +47,24 @@ export const deviceFromUserAgent = (userAgent: string | null) => {
   return 'desktop';
 };
 
-export const getCountryCode = (request: Request) => {
-  const code = request.headers.get('x-vercel-ip-country');
-  return code && /^[A-Z]{2}$/.test(code) ? code : null;
+
+export const describeUserAgent = (userAgent: string | null) => {
+  const ua = userAgent || '';
+  const browser =
+    /Edg\//.test(ua) ? 'Edge'
+      : /OPR\/|Opera/.test(ua) ? 'Opera'
+        : /SamsungBrowser/.test(ua) ? 'Samsung Internet'
+          : /Firefox\//.test(ua) ? 'Firefox'
+            : /Chrome\//.test(ua) ? 'Chrome'
+              : /Safari\//.test(ua) ? 'Safari'
+                : 'Unknown browser';
+  const os =
+    /Windows/.test(ua) ? 'Windows'
+      : /Android/.test(ua) ? 'Android'
+        : /iPhone|iPad|iPod/.test(ua) ? 'iOS'
+          : /Mac OS X/.test(ua) ? 'macOS'
+            : /CrOS/.test(ua) ? 'ChromeOS'
+              : /Linux/.test(ua) ? 'Linux'
+                : 'Unknown OS';
+  return `${browser} on ${os}`;
 };

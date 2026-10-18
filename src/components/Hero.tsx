@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { FileText, Star } from 'lucide-react';
 import { useTheme } from '../Context/ThemeContext';
+import { useResume } from '../Context/ResumeContext';
 
 /* ─── TICKER ─────────────────────────────────────────── */
 const TICKER = [
@@ -184,6 +186,7 @@ const SummaryText: React.FC<SummaryProps> = ({ dark, inkColor, inkMidColor }) =>
 /* ─── MAIN COMPONENT ─────────────────────────────────── */
 const Hero: React.FC = () => {
   const { t, dark } = useTheme();
+  const resume = useResume();
   const [entered, setEntered] = useState(false);
 
   useEffect(() => {
@@ -304,6 +307,30 @@ const Hero: React.FC = () => {
           >
             Get in touch
           </a>
+          <button
+            type="button"
+            onClick={() => resume.open('hero')}
+            style={{
+              fontFamily: S, fontSize: 12, fontWeight: 600,
+              letterSpacing: '0.07em', textTransform: 'uppercase',
+              color: t.ink, background: 'transparent',
+              border: `1px solid ${t.inkFaint}`,
+              padding: '13px 24px', borderRadius: 999, cursor: 'pointer',
+              transition: 'color 0.2s, border-color 0.2s, background 0.2s',
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = t.ink; e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = t.inkFaint; e.currentTarget.style.background = 'transparent'; }}
+          >
+            <FileText size={14} strokeWidth={2.2} />
+            Resume
+            {resume.count !== null && resume.count > 0 && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, paddingLeft: 9, marginLeft: 1, borderLeft: `1px solid ${t.rule}`, color: t.inkMid, fontVariantNumeric: 'tabular-nums', letterSpacing: 0 }}>
+                <Star size={11} strokeWidth={2.4} fill={resume.appreciated ? 'currentColor' : 'none'} />
+                {resume.count}
+              </span>
+            )}
+          </button>
           <a
             href="#experience"
             onClick={e => { e.preventDefault(); document.querySelector('#experience')?.scrollIntoView({ behavior: 'smooth' }); }}
