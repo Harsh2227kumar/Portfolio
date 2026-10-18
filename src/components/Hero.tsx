@@ -230,13 +230,13 @@ const Hero: React.FC = () => {
                 fontFamily: S, fontSize: 10.5,
                 fontWeight: 700, letterSpacing: '0.1em',
                 textTransform: 'uppercase',
-                color: t.inkFaint, whiteSpace: 'nowrap',
+                color: t.ink, whiteSpace: 'nowrap',
                 transition: 'color 0.3s',
               }}
             >
               <span style={{ fontSize: 12 }}>{item.icon}</span>
               {item.label}
-              <span style={{ color: t.rule, marginLeft: 18, fontSize: 6 }}>●</span>
+              <span style={{ color: t.inkFaint, marginLeft: 18, fontSize: 6 }}>●</span>
             </span>
           ))}
         </div>
