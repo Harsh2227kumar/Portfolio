@@ -9,6 +9,9 @@ const emptySummary = {
   pageViews: 0,
   campaignSessions: 0,
   campaignViews: 0,
+  appreciations: 0,
+  resumeOpens: 0,
+  avgActiveSeconds: 0,
 };
 
 const ranges = {
@@ -35,7 +38,7 @@ export async function GET(request: Request) {
 
   const range = ranges[getRange(request)];
 
-  const [summary, trend, monthly, sources, mediums, contents, devices, recentCampaigns] = await Promise.all([
+  const [summary, trend, monthly, sources, mediums, contents, devices, recentCampaigns, campaigns, resumeTotals, resumePlacements, resumeSources, resumeLinks, resumeRecent, visitors, locations] = await Promise.all([
     sql`
       SELECT
         (SELECT COUNT(*)::int FROM analytics_visitors) AS users,
@@ -43,7 +46,10 @@ export async function GET(request: Request) {
         (SELECT COUNT(*)::int FROM analytics_sessions) AS sessions,
         (SELECT COUNT(*)::int FROM analytics_page_views) AS "pageViews",
         (SELECT COUNT(DISTINCT session_id)::int FROM analytics_page_views WHERE utm_source IS NOT NULL OR utm_medium IS NOT NULL OR utm_content IS NOT NULL) AS "campaignSessions",
-        (SELECT COUNT(*)::int FROM analytics_page_views WHERE utm_source IS NOT NULL OR utm_medium IS NOT NULL OR utm_content IS NOT NULL) AS "campaignViews"
+        (SELECT COUNT(*)::int FROM analytics_page_views WHERE utm_source IS NOT NULL OR utm_medium IS NOT NULL OR utm_content IS NOT NULL) AS "campaignViews",
+        (SELECT COUNT(*)::int FROM resume_appreciations) AS appreciations,
+        (SELECT COUNT(*)::int FROM analytics_events WHERE event_type = 'resume_open') AS "resumeOpens",
+        (SELECT COALESCE(ROUND(AVG(active_seconds)), 0)::int FROM analytics_sessions WHERE active_seconds > 0) AS "avgActiveSeconds"
     `,
     sql`
       WITH buckets AS (
@@ -155,6 +161,120 @@ export async function GET(request: Request) {
       ORDER BY views DESC, "lastSeen" DESC
       LIMIT 10
     `,
+    sql`
+      SELECT
+        utm_campaign AS name,
+        COUNT(*)::int AS views,
+        COUNT(DISTINCT session_id)::int AS sessions,
+        COUNT(DISTINCT visitor_id)::int AS users
+      FROM analytics_page_views
+      WHERE utm_campaign IS NOT NULL
+      GROUP BY 1
+      ORDER BY views DESC
+      LIMIT 8
+    `,
+    sql`
+      SELECT
+        COUNT(*) FILTER (WHERE event_type = 'resume_open')::int AS opens,
+        COUNT(DISTINCT visitor_id) FILTER (WHERE event_type = 'resume_open')::int AS viewers,
+        COUNT(*) FILTER (WHERE event_type = 'resume_download')::int AS downloads,
+        COUNT(*) FILTER (WHERE event_type = 'resume_link_click')::int AS "linkClicks",
+        (SELECT COUNT(*)::int FROM resume_appreciations) AS appreciations,
+        COALESCE(ROUND(AVG(value) FILTER (WHERE event_type = 'resume_view_time')), 0)::int AS "avgReadSeconds",
+        COALESCE(SUM(value) FILTER (WHERE event_type = 'resume_view_time'), 0)::int AS "totalReadSeconds"
+      FROM analytics_events
+    `,
+    sql`
+      SELECT
+        COALESCE(label, 'unknown') AS name,
+        COUNT(*)::int AS views,
+        COUNT(DISTINCT session_id)::int AS sessions,
+        COUNT(DISTINCT visitor_id)::int AS users
+      FROM analytics_events
+      WHERE event_type = 'resume_open'
+      GROUP BY 1
+      ORDER BY views DESC
+    `,
+    sql`
+      SELECT
+        COALESCE(s.utm_source, 'direct / organic') AS name,
+        COUNT(*)::int AS views,
+        COUNT(DISTINCT e.session_id)::int AS sessions,
+        COUNT(DISTINCT e.visitor_id)::int AS users
+      FROM analytics_events e
+      LEFT JOIN analytics_sessions s ON s.session_id = e.session_id
+      WHERE e.event_type = 'resume_open'
+      GROUP BY 1
+      ORDER BY views DESC
+      LIMIT 10
+    `,
+    sql`
+      SELECT
+        COALESCE(label, 'unknown') AS name,
+        COUNT(*)::int AS views,
+        COUNT(DISTINCT session_id)::int AS sessions,
+        COUNT(DISTINCT visitor_id)::int AS users
+      FROM analytics_events
+      WHERE event_type = 'resume_link_click'
+      GROUP BY 1
+      ORDER BY views DESC
+      LIMIT 8
+    `,
+    sql`
+      SELECT
+        e.event_type AS type,
+        e.label,
+        e.value,
+        e.created_at AS "createdAt",
+        s.ip,
+        s.city,
+        s.region,
+        s.country_code AS "countryCode"
+      FROM analytics_events e
+      LEFT JOIN analytics_sessions s ON s.session_id = e.session_id
+      WHERE e.event_type LIKE 'resume_%'
+      ORDER BY e.created_at DESC
+      LIMIT 25
+    `,
+    sql`
+      SELECT
+        s.session_id AS "sessionId",
+        s.visitor_id AS "visitorId",
+        s.started_at AS "startedAt",
+        s.last_seen AS "lastSeen",
+        s.ip,
+        s.city,
+        s.region,
+        s.country_code AS "countryCode",
+        s.device_type AS device,
+        s.user_agent AS "userAgent",
+        s.referrer,
+        s.landing_path AS "landingPath",
+        s.utm_source AS "utmSource",
+        s.utm_medium AS "utmMedium",
+        s.active_seconds AS "activeSeconds",
+        (SELECT COUNT(*)::int FROM analytics_page_views pv WHERE pv.session_id = s.session_id) AS "pageViews",
+        EXISTS (SELECT 1 FROM analytics_events e WHERE e.session_id = s.session_id AND e.event_type = 'resume_open') AS "resumeOpened",
+        (SELECT COUNT(*)::int FROM analytics_sessions p WHERE p.visitor_id = s.visitor_id AND p.started_at < s.started_at) AS "previousSessions"
+      FROM analytics_sessions s
+      ORDER BY s.started_at DESC
+      LIMIT 300
+    `,
+    sql`
+      SELECT
+        country_code AS "countryCode",
+        region,
+        city,
+        COUNT(*)::int AS sessions,
+        COUNT(DISTINCT visitor_id)::int AS users,
+        COUNT(DISTINCT ip)::int AS ips,
+        MAX(started_at) AS "lastSeen"
+      FROM analytics_sessions
+      WHERE country_code IS NOT NULL OR city IS NOT NULL
+      GROUP BY 1, 2, 3
+      ORDER BY sessions DESC
+      LIMIT 50
+    `,
   ]);
 
   return json({
@@ -165,9 +285,19 @@ export async function GET(request: Request) {
       sources: sources.rows,
       mediums: mediums.rows,
       contents: contents.rows,
+      campaigns: campaigns.rows,
     },
     devices: devices.rows,
     recentCampaigns: recentCampaigns.rows,
+    resume: {
+      totals: resumeTotals.rows[0] || {},
+      placements: resumePlacements.rows,
+      sources: resumeSources.rows,
+      links: resumeLinks.rows,
+      recent: resumeRecent.rows,
+    },
+    visitors: visitors.rows,
+    locations: locations.rows,
   });
 }
 

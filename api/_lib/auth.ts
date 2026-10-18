@@ -1,4 +1,4 @@
-import { createHmac, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
+import { createHmac, scryptSync, timingSafeEqual } from 'node:crypto';
 import { getCookie, setCookieHeader, unauthorized } from './http.js';
 
 const COOKIE_NAME = 'hk_dash_session';
@@ -51,12 +51,6 @@ export const isAuthorized = (request: Request) => {
 export const requireAuth = (request: Request) => {
   if (!isAuthorized(request)) return unauthorized();
   return null;
-};
-
-export const hashPassword = (password: string) => {
-  const salt = randomBytes(16).toString('base64url');
-  const hash = scryptSync(password, salt, 64).toString('base64url');
-  return `scrypt$${salt}$${hash}`;
 };
 
 export const verifyPassword = (password: string, stored: string) => {

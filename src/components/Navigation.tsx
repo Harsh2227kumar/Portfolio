@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Mail, Moon, Sun } from 'lucide-react';
+import { FileText, Github, Linkedin, Mail, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../Context/ThemeContext';
+import { useResume } from '../Context/ResumeContext';
 
 /* ─── DATA ──────────────────────────────────────────── */
 const NAV_ITEMS = [
@@ -44,6 +45,7 @@ export const SIDEBAR_W = 280;
 /* ─── COMPONENT ─────────────────────────────────────── */
 const Navigation = () => {
   const { dark, toggle, t } = useTheme();
+  const resume = useResume();
   const [active, setActive] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [entered, setEntered] = useState(false);
@@ -207,6 +209,36 @@ const Navigation = () => {
             </button>
           );
         })}
+        <button
+          onClick={() => { setMobileOpen(false); resume.open('sidebar'); }}
+          style={{
+            fontFamily: S,
+            fontSize: 13.5,
+            fontWeight: 600,
+            color: t.ink,
+            background: 'none', border: 'none',
+            cursor: 'pointer', padding: '11px 0',
+            textAlign: 'left',
+            borderBottom: `1px solid ${border}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+            opacity: entered ? 1 : 0,
+            transition: 'opacity 0.15s, color 0.15s',
+            transitionDelay: `${NAV_ITEMS.length * 35 + 160}ms`,
+          }}
+          onMouseEnter={e => (e.currentTarget.style.opacity = '0.65')}
+          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+        >
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <FileText size={14} strokeWidth={2.2} />
+            Resume
+          </span>
+          <span style={{
+            fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase',
+            color: t.inkMid, border: `1px solid ${border}`, borderRadius: 999, padding: '3px 8px',
+          }}>
+            {resume.count ? `★ ${resume.count}` : 'View'}
+          </span>
+        </button>
       </nav>
 
       {/* ── social links + theme ── */}
@@ -300,6 +332,9 @@ const Navigation = () => {
           HARSH KUMAR
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <button onClick={() => resume.open('mobile-topbar')} aria-label="View resume" style={{ background: 'none', border: `1px solid ${border}`, borderRadius: 999, cursor: 'pointer', color: t.ink, display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', fontFamily: S, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <FileText size={13} strokeWidth={2.2} /> Resume
+          </button>
           <button onClick={toggle} aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.inkMid, display: 'flex', alignItems: 'center', padding: 6 }}>
             {dark ? <Sun size={15} strokeWidth={2} /> : <Moon size={15} strokeWidth={2} />}
           </button>
